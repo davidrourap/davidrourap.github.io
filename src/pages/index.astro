@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const recentPosts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const activeProjects = (await getCollection('projects', ({ data }) => data.status === 'active'))
+  .slice(0, 3);
+
+const categoryColors: Record<string, string> = {
+  science: 'bg-emerald-50 text-emerald-700',
+  startup: 'bg-blue-50 text-blue-700',
+  personal: 'bg-amber-50 text-amber-700',
+};
+---
+<BaseLayout title="David Rourap">
+  <!-- Hero -->
+  <section class="max-w-3xl mx-auto px-6 pt-20 pb-16">
+    <p class="text-sm font-medium text-blue-600 mb-4 tracking-wide uppercase">Scientist · CEO</p>
+    <h1 class="text-4xl font-bold text-stone-900 mb-5 leading-tight">
+      David Rourap
+    </h1>
+    <p class="text-xl text-stone-600 leading-relaxed mb-8 max-w-xl">
+      Scientist and founder of <a href="https://www.inseit.ch" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">inseit.ch</a>.
+      I work at the intersection of science and entrepreneurship — building tools and sharing what I learn along the way.
+    </p>
+    <div class="flex flex-wrap gap-3">
+      <a href="/blog" class="inline-flex items-center gap-1.5 bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+        Read the blog
+      </a>
+      <a href="/projects" class="inline-flex items-center gap-1.5 bg-white text-stone-700 text-sm font-medium px-4 py-2 rounded-md border border-stone-200 hover:border-stone-300 hover:bg-stone-50 transition-colors">
+        See my work
+      </a>
+      <a href="/about" class="inline-flex items-center gap-1.5 text-stone-500 text-sm font-medium px-4 py-2 hover:text-stone-900 transition-colors">
+        About me →
+      </a>
+    </div>
+  </section>
+
+  <!-- Recent posts -->
+  {recentPosts.length > 0 && (
+    <section class="max-w-3xl mx-auto px-6 pb-16">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-sm font-semibold text-stone-900 uppercase tracking-wider">Recent writing</h2>
+        <a href="/blog" class="text-sm text-blue-600 hover:underline">All posts →</a>
+      </div>
+      <div class="space-y-4">
+        {recentPosts.map(post => (
+          <a
+            href={`/blog/${post.id.replace(/\.mdx?$/, '')}`}
+            class="block group"
+          >
+            <article class="bg-white border border-stone-200 rounded-lg px-5 py-4 hover:border-blue-200 hover:shadow-sm transition-all">
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <h3 class="font-medium text-stone-900 group-hover:text-blue-600 transition-colors mb-1">
+                    {post.data.title}
+                  </h3>
+                  <p class="text-sm text-stone-500 line-clamp-1">{post.data.description}</p>
+                </div>
+                <div class="shrink-0 flex flex-col items-end gap-2">
+                  <span class={`text-xs font-medium px-2 py-0.5 rounded-full ${categoryColors[post.data.category]}`}>
+                    {post.data.category}
+                  </span>
+                  <span class="text-xs text-stone-400">
+                    {post.data.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  </span>
+                </div>
+              </div>
+            </article>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Active projects -->
+  {activeProjects.length > 0 && (
+    <section class="max-w-3xl mx-auto px-6 pb-20">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-sm font-semibold text-stone-900 uppercase tracking-wider">Active projects</h2>
+        <a href="/projects" class="text-sm text-blue-600 hover:underline">All projects →</a>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {activeProjects.map(project => (
+          <a href={project.data.link ?? '/projects'} target={project.data.link ? '_blank' : '_self'} rel="noopener noreferrer" class="block group">
+            <article class="bg-white border border-stone-200 rounded-lg p-5 h-full hover:border-blue-200 hover:shadow-sm transition-all">
+              <div class="flex items-center justify-between mb-2">
+                <span class={`text-xs font-medium px-2 py-0.5 rounded-full ${project.data.type === 'startup' ? 'bg-blue-50 text-blue-700' : 'bg-emerald-50 text-emerald-700'}`}>
+                  {project.data.type}
+                </span>
+                {project.data.year && <span class="text-xs text-stone-400">{project.data.year}</span>}
+              </div>
+              <h3 class="font-medium text-stone-900 group-hover:text-blue-600 transition-colors mb-1.5">
+                {project.data.title}
+              </h3>
+              <p class="text-sm text-stone-500 line-clamp-2">{project.data.description}</p>
+            </article>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+</BaseLayout>

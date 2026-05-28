@@ -1,0 +1,48 @@
+backend:
+  name: github
+  repo: davidrourap/davidrourap.github.io  # Change to your GitHub username/repo
+  branch: main
+  base_url: https://your-oauth-worker.workers.dev  # Your Cloudflare Worker URL (see oauth-worker/)
+
+media_folder: public/images
+public_folder: /images
+
+collections:
+  - name: blog
+    label: Blog Posts
+    folder: src/content/blog
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Date, name: date, widget: datetime, format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+      - label: Category
+        name: category
+        widget: select
+        options: [science, startup, personal]
+      - { label: Description, name: description, widget: string, hint: "Short summary shown in listings." }
+      - { label: Draft, name: draft, widget: boolean, default: false }
+      - { label: Body, name: body, widget: markdown }
+
+  - name: projects
+    label: Projects
+    folder: src/content/projects
+    create: true
+    delete: true
+    extension: json
+    format: json
+    slug: "{{slug}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Description, name: description, widget: text }
+      - label: Type
+        name: type
+        widget: select
+        options: [research, startup]
+      - label: Status
+        name: status
+        widget: select
+        options: [active, completed, paused]
+      - { label: Link, name: link, widget: string, required: false }
+      - { label: Year, name: year, widget: number, required: false, value_type: int }

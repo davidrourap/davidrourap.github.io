@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map(post => ({
+    params: { slug: post.id.replace(/\.mdx?$/, '') },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const categoryColors: Record<string, string> = {
+  science: 'bg-emerald-50 text-emerald-700',
+  startup: 'bg-blue-50 text-blue-700',
+  personal: 'bg-amber-50 text-amber-700',
+};
+---
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <article class="max-w-3xl mx-auto px-6 pt-16 pb-20">
+    <!-- Post header -->
+    <header class="mb-12">
+      <div class="flex items-center gap-3 mb-4">
+        <span class={`text-xs font-medium px-2.5 py-1 rounded-full ${categoryColors[post.data.category]}`}>
+          {post.data.category}
+        </span>
+        <span class="text-sm text-stone-400">
+          {post.data.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+        </span>
+      </div>
+      <h1 class="text-3xl font-bold text-stone-900 leading-tight mb-4">
+        {post.data.title}
+      </h1>
+      <p class="text-lg text-stone-500">{post.data.description}</p>
+    </header>
+
+    <!-- Post body -->
+    <div class="prose prose-stone prose-lg max-w-none
+      prose-headings:font-semibold prose-headings:text-stone-900
+      prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
+      prose-code:bg-stone-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-normal
+      prose-pre:bg-stone-900 prose-pre:text-stone-100
+      prose-blockquote:border-blue-400 prose-blockquote:text-stone-600
+    ">
+      <Content />
+    </div>
+
+    <!-- Footer nav -->
+    <div class="mt-16 pt-8 border-t border-stone-200">
+      <a href="/blog" class="text-sm text-stone-500 hover:text-stone-900 transition-colors">← Back to blog</a>
+    </div>
+  </article>
+</BaseLayout>

@@ -1,0 +1,92 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const categories = ['all', 'science', 'startup', 'personal'] as const;
+
+const categoryColors: Record<string, string> = {
+  science: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  startup: 'bg-blue-50 text-blue-700 border-blue-200',
+  personal: 'bg-amber-50 text-amber-700 border-amber-200',
+};
+---
+<BaseLayout title="Blog" description="Writing on science, startups, and life by David Rourap">
+  <div class="max-w-3xl mx-auto px-6 pt-16 pb-20">
+    <p class="text-sm font-medium text-blue-600 mb-3 uppercase tracking-wide">Blog</p>
+    <h1 class="text-3xl font-bold text-stone-900 mb-2">Writing</h1>
+    <p class="text-stone-500 mb-10">Science, startups, and everything in between.</p>
+
+    <!-- Category filter (client-side via data attributes) -->
+    <div class="flex gap-2 mb-8 flex-wrap" id="filters">
+      {categories.map(cat => (
+        <button
+          data-filter={cat}
+          class={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all cursor-pointer
+            ${cat === 'all' ? 'bg-stone-900 text-white border-stone-900' : 'bg-white text-stone-500 border-stone-200 hover:border-stone-400'}`}
+        >
+          {cat === 'all' ? 'All' : cat.charAt(0).toUpperCase() + cat.slice(1)}
+        </button>
+      ))}
+    </div>
+
+    {allPosts.length === 0 ? (
+      <p class="text-stone-400 text-sm">No posts yet — check back soon.</p>
+    ) : (
+      <div class="space-y-3" id="posts">
+        {allPosts.map(post => {
+          const slug = post.id.replace(/\.mdx?$/, '');
+          return (
+            <article data-category={post.data.category}>
+              <a href={`/blog/${slug}`} class="block group">
+                <div class="bg-white border border-stone-200 rounded-lg px-5 py-4 hover:border-blue-200 hover:shadow-sm transition-all">
+                  <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1 min-w-0">
+                      <h2 class="font-medium text-stone-900 group-hover:text-blue-600 transition-colors mb-1">
+                        {post.data.title}
+                      </h2>
+                      <p class="text-sm text-stone-500 line-clamp-1">{post.data.description}</p>
+                    </div>
+                    <div class="shrink-0 flex flex-col items-end gap-2">
+                      <span class={`text-xs font-medium px-2 py-0.5 rounded-full border ${categoryColors[post.data.category]}`}>
+                        {post.data.category}
+                      </span>
+                      <span class="text-xs text-stone-400">
+                        {post.data.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </article>
+          );
+        })}
+      </div>
+    )}
+  </div>
+</BaseLayout>
+
+<script>
+  const filters = document.getElementById('filters');
+  const posts = document.querySelectorAll<HTMLElement>('#posts [data-category]');
+
+  filters?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest('[data-filter]') as HTMLElement | null;
+    if (!btn) return;
+
+    const filter = btn.dataset.filter!;
+
+    // Update button styles
+    filters.querySelectorAll('[data-filter]').forEach(b => {
+      (b as HTMLElement).className = 'text-xs font-medium px-3 py-1.5 rounded-full border transition-all cursor-pointer bg-white text-stone-500 border-stone-200 hover:border-stone-400';
+    });
+    btn.className = 'text-xs font-medium px-3 py-1.5 rounded-full border transition-all cursor-pointer bg-stone-900 text-white border-stone-900';
+
+    // Show/hide posts
+    posts.forEach(post => {
+      post.style.display = (filter === 'all' || post.dataset.category === filter) ? '' : 'none';
+    });
+  });
+</script>
