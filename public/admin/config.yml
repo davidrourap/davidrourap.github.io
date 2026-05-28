@@ -53,6 +53,11 @@ collections:
             required: false
             fields:
               - { label: Authors, name: authors, widget: string }
+              - label: Role
+                name: role
+                widget: select
+                options: [first, contributing]
+                required: false
               - { label: Title, name: title, widget: string }
               - { label: Journal, name: journal, widget: string }
               - { label: Year, name: year, widget: number, value_type: int }
