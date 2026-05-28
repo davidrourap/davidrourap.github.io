@@ -1,66 +1,85 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const [entry] = await getCollection('about');
+const { intro, background, current_work, location, affiliation } = entry.data;
 ---
-<BaseLayout title="About" description="About David Rourap — scientist, entrepreneur, founder of inseit.ch">
-  <div class="max-w-4xl mx-auto px-8 pt-28 pb-20">
+<BaseLayout title="About" description={intro}>
+  <div class="max-w-5xl mx-auto px-8 pt-28 pb-20">
 
     <div class="flex items-center gap-5 mb-16">
       <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.25em] uppercase">About</span>
       <div class="flex-1 h-px bg-[#ddd8ce]"></div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-16">
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-16 items-start">
 
       <div>
-        <h1 class="font-display text-[clamp(3rem,7vw,5.5rem)] font-semibold leading-[0.9] tracking-[-0.02em] text-[#0f0e0c] mb-10">
-          David<br/>Rourap
+        <!-- Name -->
+        <h1 class="font-display text-[clamp(2.8rem,6vw,5rem)] font-semibold leading-[0.92] tracking-[-0.02em] text-[#0f0e0c] mb-10">
+          David<br/>Roura Padrosa
         </h1>
 
-        <div class="space-y-5 font-serif text-[1.05rem] text-[#3a3530] leading-relaxed">
-          <p class="text-xl text-[#0f0e0c] font-semibold leading-snug">
-            Scientist and founder of <a href="https://www.inseit.ch" target="_blank" rel="noopener noreferrer"
-              class="text-[#2355b0] hover:underline">inseit.ch</a>.
-          </p>
-          <p>
-            [Your scientific background, training, research focus — a few sentences about where you come from and what you've studied or worked on.]
-          </p>
-          <p>
-            [What you're building at inseit — the problem you're solving, why it matters, what drives you.]
-          </p>
-          <p>
-            [What connects the two worlds for you — how science informs the startup or vice versa.]
-          </p>
+        <div class="space-y-6 font-serif text-[1.05rem] text-[#3a3530] leading-relaxed">
+          <p class="text-xl text-[#0f0e0c] leading-snug" set:html={intro.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[#2355b0] hover:underline">$1</a>')} />
+
+          <div class="h-px bg-[#ddd8ce] my-8"></div>
+
+          <div>
+            <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.2em] uppercase block mb-3">Background</span>
+            <p>{background}</p>
+          </div>
+
+          <div>
+            <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.2em] uppercase block mb-3">Current work</span>
+            <p>{current_work}</p>
+          </div>
         </div>
 
-        <div class="mt-12 pt-8 border-t border-[#ddd8ce] flex gap-6">
+        <div class="mt-12 pt-8 border-t border-[#ddd8ce] flex flex-wrap gap-6">
           <a href="https://github.com/drou0302" target="_blank" rel="noopener noreferrer"
              class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#aaa59f] hover:text-[#0f0e0c] transition-colors">GitHub ↗</a>
           <a href="https://www.linkedin.com/in/davidrourap" target="_blank" rel="noopener noreferrer"
              class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#aaa59f] hover:text-[#0f0e0c] transition-colors">LinkedIn ↗</a>
+          <a href="https://orcid.org/0000-0001-6324-8722" target="_blank" rel="noopener noreferrer"
+             class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#aaa59f] hover:text-[#0f0e0c] transition-colors">ORCID ↗</a>
           <a href="https://www.inseit.ch" target="_blank" rel="noopener noreferrer"
              class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#aaa59f] hover:text-[#0f0e0c] transition-colors">inseit.ch ↗</a>
-          <a href="/cv" class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#2355b0] hover:underline transition-colors">CV →</a>
+          <a href="/cv" class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#2355b0] hover:underline">CV →</a>
         </div>
       </div>
 
       <!-- Sidebar -->
-      <aside class="space-y-8">
-        <div>
-          <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.2em] uppercase block mb-3">Currently</span>
-          <div class="space-y-2">
-            <p class="font-serif text-sm text-[#3a3530]">CEO, <a href="https://www.inseit.ch" class="text-[#2355b0] hover:underline">inseit.ch</a></p>
-            <p class="font-serif text-sm text-[#3a3530]">[Research affiliation if any]</p>
+      <aside class="space-y-0 lg:sticky lg:top-24">
+        <!-- Photo -->
+        <div class="mb-8">
+          <img
+            src="/images/photo.jpg"
+            alt="David Roura Padrosa"
+            class="w-full aspect-[3/4] object-cover object-top"
+            style="filter: brightness(0.95) saturate(0.9);"
+          />
+        </div>
+
+        <div class="space-y-6 border-t border-[#ddd8ce] pt-6">
+          <div>
+            <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.2em] uppercase block mb-3">Currently</span>
+            <div class="space-y-1.5">
+              <p class="font-serif text-sm text-[#3a3530]">CEO, <a href="https://www.inseit.ch" class="text-[#2355b0] hover:underline">inseit.ch</a></p>
+              {affiliation && <p class="font-serif text-sm text-[#3a3530]">{affiliation}</p>}
+            </div>
           </div>
-        </div>
-        <div class="h-px bg-[#ddd8ce]"></div>
-        <div>
-          <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.2em] uppercase block mb-3">Location</span>
-          <p class="font-serif text-sm text-[#3a3530]">Switzerland</p>
-        </div>
-        <div class="h-px bg-[#ddd8ce]"></div>
-        <div>
-          <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.2em] uppercase block mb-3">Writing</span>
-          <a href="/blog" class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#2355b0] hover:underline">Read the blog →</a>
+          <div class="h-px bg-[#ddd8ce]"></div>
+          <div>
+            <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.2em] uppercase block mb-3">Location</span>
+            <p class="font-serif text-sm text-[#3a3530]">{location}</p>
+          </div>
+          <div class="h-px bg-[#ddd8ce]"></div>
+          <div>
+            <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.2em] uppercase block mb-3">Writing</span>
+            <a href="/blog" class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#2355b0] hover:underline">Read the blog →</a>
+          </div>
         </div>
       </aside>
 

@@ -15,68 +15,85 @@ const categoryColors: Record<string, string> = {
   personal: 'text-amber-700 bg-amber-50 border-amber-200',
 };
 ---
-<BaseLayout title="David Rourap" darkNav={true}>
+<BaseLayout title="David Roura Padrosa" darkNav={true}>
 
   <!-- ═══════════════════════════════════════════
-       HERO — dark, editorial, full-height
+       HERO — portrait + name, warm and human
   ═══════════════════════════════════════════ -->
-  <section class="relative min-h-screen bg-[#090a0e] flex flex-col justify-end overflow-hidden">
+  <section class="relative min-h-screen bg-[#100c09] flex flex-col md:flex-row overflow-hidden">
 
-    <!-- Radial depth glow -->
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_15%_70%,_#0d1428_0%,_transparent_55%)] pointer-events-none"></div>
-
-    <!-- Subtle grid -->
-    <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.025)_1px,transparent_1px)] bg-[size:72px_72px] pointer-events-none"></div>
-
-    <!-- Content -->
-    <div class="relative max-w-6xl mx-auto px-8 w-full pb-16 pt-28">
-
-      <!-- Role labels -->
-      <div class="flex flex-wrap gap-6 mb-10 animate-in" style="animation-delay:0.1s">
-        <span class="font-mono text-[11px] text-[#4d607a] tracking-[0.25em] uppercase">01 — Scientist</span>
-        <span class="font-mono text-[11px] text-[#4d607a] tracking-[0.25em] uppercase">02 — CEO, inseit.ch</span>
-        <span class="font-mono text-[11px] text-[#2d3548] tracking-[0.25em] uppercase">Switzerland</span>
-      </div>
-
-      <!-- Name — the centrepiece -->
-      <h1 class="font-display font-semibold leading-[0.88] tracking-[-0.02em] text-[#f0ece3] mb-10"
-          style="font-size: clamp(4.5rem, 13vw, 11rem)">
-        <span class="block animate-in" style="animation-delay:0.2s">David</span>
-        <span class="block animate-in" style="animation-delay:0.32s; font-size: clamp(5rem, 15vw, 13rem)">Rourap</span>
-      </h1>
-
-      <!-- Divider -->
-      <div class="w-full h-px bg-[#1e2130] mb-10 animate-line" style="animation-delay:0.5s"></div>
-
-      <!-- Bio + CTAs -->
-      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-8 animate-in" style="animation-delay:0.6s">
-        <p class="font-serif text-[1.1rem] text-[#7a7d8a] leading-relaxed max-w-sm">
-          Building at the intersection of science and entrepreneurship.
-          Founder of <a href="https://www.inseit.ch" target="_blank" rel="noopener noreferrer"
-            class="text-[#9aa8c0] hover:text-[#f0ece3] transition-colors underline underline-offset-2">inseit.ch</a>.
-        </p>
-        <div class="flex gap-3 shrink-0">
-          <a href="/blog"
-             class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#f0ece3] border border-[#3a3d4a] px-6 py-3 hover:bg-[#f0ece3] hover:text-[#090a0e] transition-all duration-200">
-            Writing →
-          </a>
-          <a href="/projects"
-             class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#8a8d9a] border border-[#2a2d3a] px-6 py-3 hover:border-[#3a3d4a] hover:text-[#f0ece3] transition-all duration-200">
-            Work
-          </a>
-        </div>
-      </div>
+    <!-- Portrait — left half on desktop, top on mobile -->
+    <div class="relative md:w-[45%] h-[55vw] md:h-auto overflow-hidden shrink-0">
+      <img
+        src="/images/photo.jpg"
+        alt="David Roura Padrosa"
+        class="w-full h-full object-cover object-top"
+        style="filter: brightness(0.88) saturate(0.85);"
+      />
+      <!-- Gradient bleed into text side -->
+      <div class="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#100c09] hidden md:block pointer-events-none"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[#100c09] via-transparent to-transparent md:hidden pointer-events-none"></div>
     </div>
 
-    <!-- Scroll hint -->
-    <div class="absolute bottom-8 right-8 animate-in" style="animation-delay:1s">
-      <span class="font-mono text-[10px] text-[#2a2d3a] tracking-[0.3em] uppercase">Scroll ↓</span>
+    <!-- Name + intro — right side -->
+    <div class="flex-1 flex flex-col justify-center px-10 md:px-14 lg:px-20 pb-16 pt-8 md:pt-28">
+
+      <h1
+        class="font-display font-semibold leading-[0.88] tracking-[-0.02em] text-[#f0ece3] animate-in"
+        style="font-size: clamp(3.5rem, 8vw, 7rem); animation-delay: 0.15s"
+      >
+        David<br/>
+        <span style="font-size: clamp(2.2rem, 5vw, 4.2rem); color: #b5ad9e;">Roura Padrosa</span>
+      </h1>
+
+      <div class="w-12 h-px bg-[#3a3028] mt-8 mb-8 animate-line" style="animation-delay: 0.35s"></div>
+
+      <p
+        class="font-serif text-[1.1rem] text-[#8a8278] leading-relaxed max-w-xs animate-in"
+        style="animation-delay: 0.45s"
+      >
+        Biochemist building AI tools for enzyme immobilisation. Co-founder of
+        <a href="https://www.inseit.ch" target="_blank" rel="noopener noreferrer"
+           class="text-[#b5ad9e] hover:text-[#f0ece3] transition-colors underline underline-offset-2">inseit.ch</a>
+        — based in Bern.
+      </p>
+
+      <div
+        class="flex flex-wrap gap-3 mt-10 animate-in"
+        style="animation-delay: 0.6s"
+      >
+        <a href="/about"
+           class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#f0ece3] border border-[#3a3028] px-5 py-2.5 hover:bg-[#f0ece3] hover:text-[#100c09] hover:border-[#f0ece3] transition-all duration-200">
+          About me
+        </a>
+        <a href="/blog"
+           class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#6a6258] border border-[#2a2018] px-5 py-2.5 hover:border-[#3a3028] hover:text-[#b5ad9e] transition-all duration-200">
+          Writing →
+        </a>
+        <a href="/cv"
+           class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#6a6258] border border-[#2a2018] px-5 py-2.5 hover:border-[#3a3028] hover:text-[#b5ad9e] transition-all duration-200">
+          CV
+        </a>
+      </div>
+
+      <!-- Social links -->
+      <div
+        class="flex gap-5 mt-10 animate-in"
+        style="animation-delay: 0.75s"
+      >
+        <a href="https://github.com/drou0302" target="_blank" rel="noopener noreferrer"
+           class="font-mono text-[10px] tracking-[0.15em] uppercase text-[#3a3028] hover:text-[#8a8278] transition-colors">GitHub ↗</a>
+        <a href="https://www.linkedin.com/in/davidrourap" target="_blank" rel="noopener noreferrer"
+           class="font-mono text-[10px] tracking-[0.15em] uppercase text-[#3a3028] hover:text-[#8a8278] transition-colors">LinkedIn ↗</a>
+        <a href="https://orcid.org/0000-0001-6324-8722" target="_blank" rel="noopener noreferrer"
+           class="font-mono text-[10px] tracking-[0.15em] uppercase text-[#3a3028] hover:text-[#8a8278] transition-colors">ORCID ↗</a>
+      </div>
     </div>
   </section>
 
 
   <!-- ═══════════════════════════════════════════
-       CONTENT — warm cream sections
+       CONTENT — warm cream
   ═══════════════════════════════════════════ -->
   <div class="bg-[#f4efe5]">
 

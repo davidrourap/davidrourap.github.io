@@ -8,6 +8,60 @@ media_folder: public/images
 public_folder: /images
 
 collections:
+  - name: pages
+    label: Pages
+    files:
+      - label: About
+        name: about
+        file: src/content/about/index.md
+        fields:
+          - { label: Intro, name: intro, widget: text, hint: "Short intro shown at the top of the About page." }
+          - { label: Background, name: background, widget: text, hint: "Your scientific background." }
+          - { label: Current work, name: current_work, widget: text, hint: "What you're building at inseit." }
+          - { label: Location, name: location, widget: string }
+          - { label: Affiliation, name: affiliation, widget: string, required: false }
+      - label: CV
+        name: cv
+        file: src/content/cv/index.json
+        extension: json
+        format: json
+        fields:
+          - label: Positions
+            name: positions
+            widget: list
+            fields:
+              - { label: Role, name: role, widget: string }
+              - { label: Organisation, name: org, widget: string }
+              - { label: Organisation URL, name: org_url, widget: string, required: false }
+              - { label: Location, name: location, widget: string }
+              - { label: Start year, name: start, widget: string }
+              - { label: End year, name: end, widget: string }
+              - { label: Description, name: description, widget: text, required: false }
+          - label: Education
+            name: education
+            widget: list
+            fields:
+              - { label: Degree, name: degree, widget: string }
+              - { label: Field, name: field, widget: string }
+              - { label: Institution, name: institution, widget: string }
+              - { label: Location, name: location, widget: string }
+              - { label: Start year, name: start, widget: string }
+              - { label: End year, name: end, widget: string }
+          - label: Publications
+            name: publications
+            widget: list
+            required: false
+            fields:
+              - { label: Authors, name: authors, widget: string }
+              - { label: Title, name: title, widget: string }
+              - { label: Journal, name: journal, widget: string }
+              - { label: Year, name: year, widget: number, value_type: int }
+              - { label: DOI, name: doi, widget: string, required: false }
+          - label: Skills
+            name: skills
+            widget: list
+            field: { label: Skill, name: skill, widget: string }
+
   - name: blog
     label: Blog Posts
     folder: src/content/blog

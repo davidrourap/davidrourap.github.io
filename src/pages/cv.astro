@@ -1,7 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const [entry] = await getCollection('cv');
+const { positions, education, publications, skills } = entry.data;
 ---
-<BaseLayout title="CV" description="Curriculum Vitae — David Rourap">
+<BaseLayout title="CV" description="Curriculum Vitae — David Roura Padrosa">
   <div class="max-w-4xl mx-auto px-8 pt-28 pb-20">
 
     <div class="flex items-center justify-between mb-16">
@@ -15,80 +19,107 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </a>
     </div>
 
-    <h1 class="font-display text-[clamp(3rem,7vw,5.5rem)] font-semibold leading-[0.9] tracking-[-0.02em] text-[#0f0e0c] mb-16">
-      David<br/>Rourap
+    <h1 class="font-display text-[clamp(2.8rem,6vw,5rem)] font-semibold leading-[0.9] tracking-[-0.02em] text-[#0f0e0c] mb-16">
+      David<br/>Roura Padrosa
     </h1>
 
     <div class="space-y-14">
 
-      <!-- Current -->
       <section>
-        <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.25em] uppercase block mb-5">Current position</span>
-        <div class="border-t border-[#ddd8ce] pt-5">
-          <div class="flex justify-between items-start">
-            <div>
-              <p class="font-serif font-semibold text-[#0f0e0c] text-lg">CEO & Co-founder</p>
-              <p class="font-serif text-[#7a7570]">
-                <a href="https://www.inseit.ch" target="_blank" rel="noopener noreferrer"
-                   class="hover:text-[#2355b0] transition-colors">inseit.ch</a> · Switzerland
-              </p>
+        <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.25em] uppercase block mb-5">Positions</span>
+        <div class="border-t border-[#ddd8ce] pt-5 space-y-8">
+          {positions.map(p => (
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="font-serif font-semibold text-[#0f0e0c] text-lg">{p.role}</p>
+                <p class="font-serif text-[#7a7570]">
+                  {p.org_url
+                    ? <a href={p.org_url} target="_blank" rel="noopener noreferrer" class="hover:text-[#2355b0] transition-colors">{p.org}</a>
+                    : p.org
+                  } · {p.location}
+                </p>
+                {p.description && <p class="font-serif text-sm text-[#5a5550] mt-1.5 max-w-lg leading-relaxed">{p.description}</p>}
+              </div>
+              <span class="font-mono text-[11px] text-[#aaa59f] shrink-0 ml-8">{p.start} – {p.end}</span>
             </div>
-            <span class="font-mono text-[11px] text-[#aaa59f] shrink-0 ml-8">20XX – present</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Education -->
-      <section>
-        <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.25em] uppercase block mb-5">Education</span>
-        <div class="border-t border-[#ddd8ce] pt-5 space-y-6">
-          <div class="flex justify-between items-start">
-            <div>
-              <p class="font-serif font-semibold text-[#0f0e0c]">[Degree] in [Field]</p>
-              <p class="font-serif text-sm text-[#7a7570]">[University] · [Location]</p>
-            </div>
-            <span class="font-mono text-[11px] text-[#aaa59f] shrink-0 ml-8">20XX – 20XX</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Experience -->
-      <section>
-        <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.25em] uppercase block mb-5">Experience</span>
-        <div class="border-t border-[#ddd8ce] pt-5 space-y-6">
-          <div class="flex justify-between items-start">
-            <div>
-              <p class="font-serif font-semibold text-[#0f0e0c]">[Role]</p>
-              <p class="font-serif text-sm text-[#7a7570]">[Institution] · [Location]</p>
-              <p class="font-serif text-sm text-[#5a5550] mt-1 max-w-lg">[Brief description of what you did.]</p>
-            </div>
-            <span class="font-mono text-[11px] text-[#aaa59f] shrink-0 ml-8">20XX – 20XX</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Publications -->
-      <section>
-        <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.25em] uppercase block mb-5">Publications</span>
-        <div class="border-t border-[#ddd8ce] pt-5 space-y-3">
-          <p class="font-serif text-sm text-[#5a5550] leading-relaxed">
-            [Author(s)]. &ldquo;[Title].&rdquo; <em>[Journal]</em>, [Year].
-            <a href="#" class="text-[#2355b0] hover:underline ml-1">DOI ↗</a>
-          </p>
-        </div>
-      </section>
-
-      <!-- Skills -->
-      <section>
-        <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.25em] uppercase block mb-5">Skills</span>
-        <div class="border-t border-[#ddd8ce] pt-5 flex flex-wrap gap-2">
-          {['[Skill 1]', '[Skill 2]', '[Skill 3]'].map(skill => (
-            <span class="font-mono text-[11px] tracking-[0.05em] bg-[#eeeae0] text-[#5a5550] px-3 py-1.5 border border-[#ddd8ce]">
-              {skill}
-            </span>
           ))}
         </div>
       </section>
+
+      <section>
+        <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.25em] uppercase block mb-5">Education</span>
+        <div class="border-t border-[#ddd8ce] pt-5 space-y-6">
+          {education.map(e => (
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="font-serif font-semibold text-[#0f0e0c]">{e.degree} in {e.field}</p>
+                <p class="font-serif text-sm text-[#7a7570]">{e.institution} · {e.location}</p>
+              </div>
+              <span class="font-mono text-[11px] text-[#aaa59f] shrink-0 ml-8">{e.start} – {e.end}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {publications.length > 0 && (
+        <section>
+          <div class="flex items-center justify-between mb-5">
+            <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.25em] uppercase">
+              Publications <span class="text-[#ddd8ce]">({publications.length})</span>
+            </span>
+            <a
+              href="https://orcid.org/0000-0001-6324-8722"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.1em] text-[#a6ce39] hover:text-[#8ab52f] transition-colors"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947-.947-.431-.947-.947.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.016-5.325 5.016h-3.919V7.416zm1.444 1.303v7.444h2.297c2.359 0 3.928-1.425 3.928-3.722 0-2.016-1.284-3.722-3.891-3.722h-2.334z"/>
+              </svg>
+              ORCID ↗
+            </a>
+          </div>
+          <div class="border-t border-[#ddd8ce] pt-5 space-y-4">
+            {publications.map(pub => {
+              const isHighImpact = ['Nature Chemistry', 'Nature Catalysis'].includes(pub.journal);
+              const isFirst = pub.role === 'first';
+              return (
+                <div class="flex gap-3 items-start">
+                  <span class={`font-mono text-[9px] tracking-[0.08em] uppercase px-1.5 py-0.5 border shrink-0 mt-0.5 ${
+                    isFirst
+                      ? 'text-[#2355b0] bg-blue-50 border-blue-200'
+                      : 'text-[#aaa59f] bg-[#eeeae0] border-[#ddd8ce]'
+                  }`}>
+                    {isFirst ? 'First author' : 'Co-author'}
+                  </span>
+                  <p class="font-serif text-sm text-[#5a5550] leading-relaxed">
+                    {pub.authors} &ldquo;{pub.title}.&rdquo;{' '}
+                    <em class={isHighImpact ? 'text-[#0f0e0c] font-semibold not-italic' : ''}>{pub.journal}</em>,{' '}
+                    {pub.year}.
+                    {pub.doi && (
+                      <a href={`https://doi.org/${pub.doi}`} target="_blank" rel="noopener noreferrer"
+                         class="text-[#2355b0] hover:underline ml-1">DOI ↗</a>
+                    )}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {skills.length > 0 && (
+        <section>
+          <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.25em] uppercase block mb-5">Skills</span>
+          <div class="border-t border-[#ddd8ce] pt-5 flex flex-wrap gap-2">
+            {skills.map(skill => (
+              <span class="font-mono text-[11px] tracking-[0.05em] bg-[#eeeae0] text-[#5a5550] px-3 py-1.5 border border-[#ddd8ce]">
+                {skill}
+              </span>
+            ))}
+          </div>
+        </section>
+      )}
 
     </div>
   </div>

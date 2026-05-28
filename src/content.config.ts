@@ -24,4 +24,46 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { blog, projects };
+const about = defineCollection({
+  loader: glob({ pattern: 'index.md', base: './src/content/about' }),
+  schema: z.object({
+    intro: z.string(),
+    background: z.string(),
+    current_work: z.string(),
+    location: z.string().default('Bern, Switzerland'),
+    affiliation: z.string().optional(),
+  }),
+});
+
+const cv = defineCollection({
+  loader: glob({ pattern: 'index.json', base: './src/content/cv' }),
+  schema: z.object({
+    positions: z.array(z.object({
+      role: z.string(),
+      org: z.string(),
+      org_url: z.string().optional(),
+      location: z.string(),
+      start: z.string(),
+      end: z.string(),
+      description: z.string().optional(),
+    })),
+    education: z.array(z.object({
+      degree: z.string(),
+      field: z.string(),
+      institution: z.string(),
+      location: z.string(),
+      start: z.string(),
+      end: z.string(),
+    })),
+    publications: z.array(z.object({
+      authors: z.string(),
+      title: z.string(),
+      journal: z.string(),
+      year: z.number(),
+      doi: z.string().optional(),
+    })).default([]),
+    skills: z.array(z.string()).default([]),
+  }),
+});
+
+export const collections = { blog, projects, about, cv };
