@@ -78,6 +78,7 @@ const cv = defineCollection({
       awarded_by: z.string(),
       year: z.number(),
       description: z.string().optional(),
+      highlight: z.boolean().default(false),
     })).default([]),
     funding: z.array(z.object({
       title: z.string(),
@@ -86,6 +87,7 @@ const cv = defineCollection({
       start: z.string(),
       end: z.string(),
       role: z.enum(['Main applicant', 'Co-applicant', 'Participant']).optional(),
+      highlight: z.boolean().default(false),
     })).default([]),
     skills: z.array(z.string()).default([]),
   }),

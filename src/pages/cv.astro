@@ -166,7 +166,7 @@ const COLLAPSED_COUNT = 5;
           </span>
           <div class="border-t border-[#6D5959] pt-5 space-y-5">
             {prizes.map(prize => (
-              <div class="flex justify-between items-start gap-8">
+              <div class={`flex justify-between items-start gap-8 prize-entry${!prize.highlight ? ' prize-hidden' : ''}`}>
                 <div>
                   <p class="font-serif font-semibold text-[#D2E59E]">{prize.title}</p>
                   <p class="font-serif text-sm text-[#9FA0C3]">{prize.awarded_by}</p>
@@ -178,6 +178,16 @@ const COLLAPSED_COUNT = 5;
               </div>
             ))}
           </div>
+          {prizes.some(p => !p.highlight) && (
+            <button
+              id="prizes-toggle"
+              class="mt-5 font-mono text-[10px] tracking-[0.15em] uppercase text-[#9FA0C3] border border-[#6D5959] px-4 py-2 hover:text-[#D2E59E] hover:border-[#9FA0C3] transition-all cursor-pointer"
+              data-total={prizes.length}
+              data-hidden={prizes.filter(p => !p.highlight).length}
+            >
+              Show all {prizes.length} prizes ↓
+            </button>
+          )}
         </section>
       )}
 
@@ -188,7 +198,7 @@ const COLLAPSED_COUNT = 5;
           </span>
           <div class="border-t border-[#6D5959] pt-5 space-y-5">
             {funding.map(grant => (
-              <div class="flex justify-between items-start gap-8">
+              <div class={`flex justify-between items-start gap-8 funding-entry${!grant.highlight ? ' funding-hidden' : ''}`}>
                 <div>
                   <p class="font-serif font-semibold text-[#D2E59E]">{grant.title}</p>
                   <p class="font-serif text-sm text-[#9FA0C3]">
@@ -203,6 +213,16 @@ const COLLAPSED_COUNT = 5;
               </div>
             ))}
           </div>
+          {funding.some(g => !g.highlight) && (
+            <button
+              id="funding-toggle"
+              class="mt-5 font-mono text-[10px] tracking-[0.15em] uppercase text-[#9FA0C3] border border-[#6D5959] px-4 py-2 hover:text-[#D2E59E] hover:border-[#9FA0C3] transition-all cursor-pointer"
+              data-total={funding.length}
+              data-hidden={funding.filter(g => !g.highlight).length}
+            >
+              Show all {funding.length} grants ↓
+            </button>
+          )}
         </section>
       )}
 
@@ -225,9 +245,10 @@ const COLLAPSED_COUNT = 5;
 
 <style is:global>
   @media print {
-    nav, footer, #print-cv-btn, #pubs-toggle { display: none !important; }
+    nav, footer, #print-cv-btn, #pubs-toggle, #prizes-toggle, #funding-toggle { display: none !important; }
     body { background: #fff !important; color: #000 !important; }
     .pub-hidden { display: grid !important; }
+    .prize-hidden, .funding-hidden { display: flex !important; }
     a { color: inherit !important; text-decoration: none !important; }
   }
 </style>
@@ -235,6 +256,27 @@ const COLLAPSED_COUNT = 5;
 <script>
   // Print button
   document.getElementById('print-cv-btn')?.addEventListener('click', () => window.print());
+
+  // Generic expand/collapse factory
+  function makeToggle(btnId: string, hiddenClass: string, labelAll: (n: number) => string) {
+    const btn = document.getElementById(btnId) as HTMLButtonElement | null;
+    if (!btn) return;
+    const total = Number(btn.dataset.total);
+    let expanded = false;
+    document.querySelectorAll(`.${hiddenClass}`).forEach(el => {
+      (el as HTMLElement).style.display = 'none';
+    });
+    btn.addEventListener('click', () => {
+      expanded = !expanded;
+      document.querySelectorAll(`.${hiddenClass}`).forEach(el => {
+        (el as HTMLElement).style.display = expanded ? 'flex' : 'none';
+      });
+      btn.textContent = expanded ? 'Show fewer ↑' : labelAll(total);
+    });
+  }
+
+  makeToggle('prizes-toggle',  'prize-hidden',   n => `Show all ${n} prizes ↓`);
+  makeToggle('funding-toggle', 'funding-hidden',  n => `Show all ${n} grants ↓`);
 
   // Publications expand/collapse
   const toggle = document.getElementById('pubs-toggle') as HTMLButtonElement | null;
