@@ -1,0 +1,284 @@
+---
+interface Props {
+  showNav?: boolean;
+}
+const { showNav = true } = Astro.props;
+---
+
+<section
+  id="protein-section"
+  class="relative h-screen bg-[#000500] flex flex-col items-center justify-center overflow-hidden"
+  style="user-select:none;"
+>
+  <div
+    id="protein-hub"
+    class="relative flex-shrink-0"
+    style="width:640px;height:520px;max-width:95vw;"
+  >
+    <!-- NGL canvas — fixed at final size -->
+    <div
+      id="ngl-canvas"
+      class="absolute"
+      style="width:300px;height:300px;left:170px;top:110px;cursor:grab;"
+    >
+      <div id="protein-loading" class="absolute inset-0 flex items-center justify-center">
+        <span class="font-mono text-[10px] text-[#6D5959] tracking-[0.2em] uppercase animate-pulse">Loading…</span>
+      </div>
+    </div>
+
+    <!-- SVG annotation lines -->
+    {showNav && (
+      <svg
+        id="annotation-svg"
+        class="absolute inset-0 overflow-visible pointer-events-none"
+        width="640" height="520" viewBox="0 0 640 520"
+        aria-hidden="true" style="opacity:0;"
+      >
+        <circle id="dot-about"    cx="198" cy="148" r="2" fill="#6D5959"/>
+        <line   id="line-about"   x1="198" y1="148" x2="82"  y2="68"  stroke="#6D5959" stroke-width="0.8"/>
+        <circle id="dot-inseit"   cx="442" cy="148" r="2" fill="#6D5959"/>
+        <line   id="line-inseit"  x1="442" y1="148" x2="556" y2="68"  stroke="#6D5959" stroke-width="0.8"/>
+        <circle id="dot-blog"     cx="462" cy="258" r="2" fill="#6D5959"/>
+        <line   id="line-blog"    x1="462" y1="258" x2="582" y2="255" stroke="#6D5959" stroke-width="0.8"/>
+        <circle id="dot-cv"       cx="442" cy="370" r="2" fill="#6D5959"/>
+        <line   id="line-cv"      x1="442" y1="370" x2="556" y2="448" stroke="#6D5959" stroke-width="0.8"/>
+        <circle id="dot-research" cx="198" cy="370" r="2" fill="#6D5959"/>
+        <line   id="line-research" x1="198" y1="370" x2="82" y2="448" stroke="#6D5959" stroke-width="0.8"/>
+      </svg>
+    )}
+
+    <!-- Navigation labels -->
+    {showNav && (
+      <>
+        <a href="/about"      data-line="about"    class="ann-link absolute font-mono text-[11px] tracking-[0.22em] uppercase text-[#9FA0C3] hover:text-[#FE9000] transition-colors duration-200" style="top:52px;left:22px;opacity:0;">About</a>
+        <a href="https://www.inseit.ch" target="_blank" rel="noopener noreferrer" data-line="inseit" class="ann-link absolute font-mono text-[11px] tracking-[0.22em] uppercase text-[#9FA0C3] hover:text-[#FE9000] transition-colors duration-200" style="top:52px;right:22px;opacity:0;">inseit.ch ↗</a>
+        <a href="/blog"       data-line="blog"     class="ann-link absolute font-mono text-[11px] tracking-[0.22em] uppercase text-[#9FA0C3] hover:text-[#FE9000] transition-colors duration-200" style="top:247px;right:18px;opacity:0;">Blog</a>
+        <a href="/cv"         data-line="cv"       class="ann-link absolute font-mono text-[11px] tracking-[0.22em] uppercase text-[#9FA0C3] hover:text-[#FE9000] transition-colors duration-200" style="bottom:52px;right:22px;opacity:0;">CV</a>
+        <a href="/research"   data-line="research" class="ann-link absolute font-mono text-[11px] tracking-[0.22em] uppercase text-[#9FA0C3] hover:text-[#FE9000] transition-colors duration-200" style="bottom:52px;left:22px;opacity:0;">Research</a>
+      </>
+    )}
+  </div>
+
+  <!-- Protein picker -->
+  <div id="pdb-picker" class="relative mt-2" style="opacity:0;">
+    <button
+      id="pdb-trigger"
+      class="flex items-center gap-2 font-mono text-[10px] tracking-[0.18em] uppercase text-[#D2E59E] hover:text-[#FE9000] transition-colors duration-200 cursor-pointer"
+      aria-haspopup="listbox"
+      aria-expanded="false"
+    >
+      <span id="pdb-trigger-label"></span>
+      <span id="pdb-trigger-arrow" class="text-[#6D5959] text-[8px]">▾</span>
+    </button>
+
+    <!-- Dropdown menu — opens upward -->
+    <div
+      id="pdb-menu"
+      role="listbox"
+      class="absolute left-1/2 -translate-x-1/2 min-w-[240px] border border-[#6D5959] bg-[#000500] z-10 overflow-y-auto"
+      style="display:none;bottom:calc(100% + 8px);max-height:220px;"
+    ></div>
+  </div>
+
+  <!-- Description -->
+  <p id="pdb-desc" class="font-mono text-[9px] text-[#9FA0C3] tracking-[0.12em] text-center mt-2 max-w-[400px] px-4 leading-relaxed" style="opacity:0;min-height:1.2em;"></p>
+
+  <!-- Name + tagline -->
+  <div id="protein-name" class="text-center mt-4" style="opacity:0;">
+    <h1 class="font-display font-semibold text-[#D2E59E] tracking-[-0.02em] leading-tight" style="font-size:clamp(1.6rem,3.5vw,2.6rem);">
+      David Roura Padrosa
+    </h1>
+    <p class="font-mono text-[11px] text-[#9FA0C3] tracking-[0.28em] uppercase mt-3">
+      Biochemist · Founder · Bern
+    </p>
+  </div>
+
+  <!-- Interaction hint -->
+  <div id="drag-hint" class="absolute bottom-20 left-1/2 -translate-x-1/2" style="opacity:0;">
+    <span class="font-mono text-[10px] text-[#6D5959] tracking-[0.2em] uppercase">drag · scroll to zoom</span>
+  </div>
+
+  <div class="absolute bottom-6 left-1/2 -translate-x-1/2">
+    <span class="font-mono text-[10px] text-[#6D5959] tracking-[0.3em] uppercase">Scroll ↓</span>
+  </div>
+</section>
+
+<script>
+  interface ProteinEntry {
+    pdb_id: string;
+    title: string;
+    description: string;
+  }
+
+  function parseMd(fallbackId: string, text: string): ProteinEntry {
+    const match = text.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+    if (!match) return { pdb_id: fallbackId, title: fallbackId, description: text.trim() };
+    const front: Record<string, string> = {};
+    match[1].split('\n').forEach(line => {
+      const i = line.indexOf(':');
+      if (i > 0) front[line.slice(0, i).trim()] = line.slice(i + 1).trim();
+    });
+    return {
+      pdb_id:      front.pdb_id      ?? fallbackId,
+      title:       front.title       ?? fallbackId,
+      description: match[2].trim(),
+    };
+  }
+
+  async function fetchProteins(): Promise<ProteinEntry[]> {
+    try {
+      const ids: string[] = await fetch('/pdbs/manifest.json').then(r => r.json());
+      return Promise.all(ids.map(async id => {
+        try {
+          return parseMd(id, await fetch(`/pdbs/${id}.md`).then(r => r.text()));
+        } catch {
+          return { pdb_id: id, title: id, description: '' };
+        }
+      }));
+    } catch {
+      return [{ pdb_id: 'TsRTA', title: 'R-Transaminase', description: '' }];
+    }
+  }
+
+  async function initProtein() {
+    const [NGL, proteins] = await Promise.all([
+      import('ngl') as Promise<any>,
+      fetchProteins(),
+    ]);
+
+    document.getElementById('protein-loading')?.remove();
+
+    const stage = new NGL.Stage('ngl-canvas', {
+      backgroundColor:  '#000500',
+      ambientColor:     0xffffff,
+      ambientIntensity: 0.7,
+      lightColor:       0xffffff,
+      lightIntensity:   0.9,
+    });
+
+    window.addEventListener('resize', () => stage.handleResize(), { passive: true });
+
+    const schemeId = NGL.ColormakerRegistry.addScheme(function (this: any) {
+      this.atomColor = function (atom: any) {
+        const ss = atom.sstruc;
+        if (ss === 'h' || ss === 'g' || ss === 'i') return 0xFE9000; // orange — helices
+        if (ss === 'e' || ss === 'b')               return 0x9FA0C3; // lavender — sheets
+        return 0xD2E59E;                                               // sage — loops
+      };
+    });
+
+    let currentComp: any = null;
+    let activeId = proteins[0]?.pdb_id ?? '';
+
+    async function loadProtein(pdb_id: string) {
+      stage.setSpin(null as any, 0);
+      if (currentComp) { stage.removeComponent(currentComp); currentComp = null; }
+      currentComp = await stage.loadFile(`/pdbs/${pdb_id}.pdb`);
+      currentComp.addRepresentation('ribbon', { colorScheme: schemeId, smoothSheet: true, subdiv: 12 });
+      currentComp.autoView(0);
+      stage.setSpin([0, 1, 0], 0.006);
+    }
+
+    // Build dropdown
+    const trigger      = document.getElementById('pdb-trigger')!;
+    const triggerLabel = document.getElementById('pdb-trigger-label')!;
+    const triggerArrow = document.getElementById('pdb-trigger-arrow')!;
+    const menu         = document.getElementById('pdb-menu')!;
+    const descEl       = document.getElementById('pdb-desc') as HTMLElement;
+    const pickerEl     = document.getElementById('pdb-picker')!;
+
+    function setActive(p: ProteinEntry) {
+      activeId = p.pdb_id;
+      triggerLabel.textContent = `${p.pdb_id} · ${p.title}`;
+      menu.querySelectorAll<HTMLDivElement>('[data-pdb]').forEach(item => {
+        item.style.color = item.dataset.pdb === activeId ? '#D2E59E' : '#9FA0C3';
+      });
+    }
+
+    function openMenu() {
+      menu.style.display = 'block';
+      trigger.setAttribute('aria-expanded', 'true');
+      triggerArrow.style.transform = 'rotate(180deg)';
+    }
+
+    function closeMenu() {
+      menu.style.display = 'none';
+      trigger.setAttribute('aria-expanded', 'false');
+      triggerArrow.style.transform = '';
+    }
+
+    if (proteins.length > 1) {
+      proteins.forEach(p => {
+        const item = document.createElement('div');
+        item.dataset.pdb = p.pdb_id;
+        item.role = 'option';
+        item.style.cssText = 'padding:8px 14px;cursor:pointer;font-family:monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.15s;';
+        item.style.color = '#9FA0C3';
+        item.textContent = `${p.pdb_id} · ${p.title}`;
+        item.addEventListener('mouseover', () => { if (item.dataset.pdb !== activeId) item.style.color = '#FE9000'; });
+        item.addEventListener('mouseout',  () => { if (item.dataset.pdb !== activeId) item.style.color = '#9FA0C3'; });
+        item.addEventListener('click', async () => {
+          if (p.pdb_id === activeId) { closeMenu(); return; }
+          closeMenu();
+          setActive(p);
+          descEl.style.transition = 'opacity 0.3s ease';
+          descEl.style.opacity = '0';
+          setTimeout(() => {
+            descEl.textContent = p.description;
+            if (p.description) { descEl.style.transition = 'opacity 0.4s ease'; descEl.style.opacity = '1'; }
+          }, 300);
+          await loadProtein(p.pdb_id);
+        });
+        menu.appendChild(item);
+      });
+
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menu.style.display === 'none' ? openMenu() : closeMenu();
+      });
+      document.addEventListener('click', () => closeMenu());
+      menu.addEventListener('click', e => e.stopPropagation());
+    } else {
+      trigger.style.cursor = 'default';
+      triggerArrow.style.display = 'none';
+    }
+
+    await loadProtein(proteins[0].pdb_id);
+    setActive(proteins[0]);
+
+    const fadeIn = (el: HTMLElement | null, delay = 0) => {
+      if (!el) return;
+      setTimeout(() => { el.style.transition = 'opacity 0.6s ease'; el.style.opacity = '1'; }, delay);
+    };
+
+    fadeIn(document.getElementById('annotation-svg'));
+    document.querySelectorAll<HTMLElement>('.ann-link').forEach((l, i) => fadeIn(l, i * 50));
+    fadeIn(document.getElementById('protein-name'), 100);
+    fadeIn(pickerEl, 200);
+
+    if (proteins[0].description) {
+      descEl.textContent = proteins[0].description;
+      fadeIn(descEl, 300);
+    }
+
+    const hint = document.getElementById('drag-hint') as HTMLElement | null;
+    if (hint) {
+      setTimeout(() => { hint.style.transition = 'opacity 0.5s ease'; hint.style.opacity = '1'; }, 300);
+      setTimeout(() => { hint.style.opacity = '0'; }, 3000);
+    }
+
+    const canvasEl = document.getElementById('ngl-canvas') as HTMLElement;
+    canvasEl.addEventListener('mousedown', () => { stage.setSpin(null as any, 0); canvasEl.style.cursor = 'grabbing'; });
+    canvasEl.addEventListener('mouseup',   () => { stage.setSpin([0, 1, 0], 0.006); canvasEl.style.cursor = 'grab'; });
+  }
+
+  document.querySelectorAll<HTMLAnchorElement>('.ann-link').forEach(link => {
+    const id = link.dataset.line;
+    const line = document.getElementById(`line-${id}`);
+    const dot  = document.getElementById(`dot-${id}`);
+    link.addEventListener('mouseenter', () => { line?.setAttribute('stroke', '#9FA0C3'); line?.setAttribute('stroke-width', '1.2'); dot?.setAttribute('fill', '#9FA0C3'); });
+    link.addEventListener('mouseleave', () => { line?.setAttribute('stroke', '#6D5959'); line?.setAttribute('stroke-width', '0.8'); dot?.setAttribute('fill', '#6D5959'); });
+  });
+
+  initProtein().catch(console.error);
+</script>

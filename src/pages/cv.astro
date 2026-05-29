@@ -10,52 +10,52 @@ const { positions, education, publications, skills } = entry.data;
 
     <div class="flex items-center justify-between mb-16">
       <div class="flex items-center gap-5 flex-1">
-        <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.25em] uppercase">Curriculum Vitae</span>
-        <div class="flex-1 h-px bg-[#ddd8ce]"></div>
+        <span class="font-mono text-[10px] text-[#9FA0C3] tracking-[0.25em] uppercase">Curriculum Vitae</span>
+        <div class="flex-1 h-px bg-[#6D5959]"></div>
       </div>
       <a href="/cv.pdf" download
-         class="ml-6 font-mono text-[10px] tracking-[0.15em] uppercase text-[#0f0e0c] border border-[#0f0e0c] px-4 py-2 hover:bg-[#0f0e0c] hover:text-[#f4efe5] transition-all shrink-0">
+         class="ml-6 font-mono text-[10px] tracking-[0.15em] uppercase text-[#D2E59E] border border-[#6D5959] px-4 py-2 hover:bg-[#D2E59E] hover:text-[#000500] transition-all shrink-0">
         ↓ PDF
       </a>
     </div>
 
-    <h1 class="font-display text-[clamp(2.8rem,6vw,5rem)] font-semibold leading-[0.9] tracking-[-0.02em] text-[#0f0e0c] mb-16">
+    <h1 class="font-display text-[clamp(2.8rem,6vw,5rem)] font-semibold leading-[0.9] tracking-[-0.02em] text-[#D2E59E] mb-16">
       David<br/>Roura Padrosa
     </h1>
 
     <div class="space-y-14">
 
       <section>
-        <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.25em] uppercase block mb-5">Positions</span>
-        <div class="border-t border-[#ddd8ce] pt-5 space-y-8">
+        <span class="font-mono text-[10px] text-[#9FA0C3] tracking-[0.25em] uppercase block mb-5">Positions</span>
+        <div class="border-t border-[#6D5959] pt-5 space-y-8">
           {positions.map(p => (
             <div class="flex justify-between items-start">
               <div>
-                <p class="font-serif font-semibold text-[#0f0e0c] text-lg">{p.role}</p>
-                <p class="font-serif text-[#7a7570]">
+                <p class="font-serif font-semibold text-[#D2E59E] text-lg">{p.role}</p>
+                <p class="font-serif text-[#9FA0C3]">
                   {p.org_url
-                    ? <a href={p.org_url} target="_blank" rel="noopener noreferrer" class="hover:text-[#2355b0] transition-colors">{p.org}</a>
+                    ? <a href={p.org_url} target="_blank" rel="noopener noreferrer" class="hover:text-[#FE9000] transition-colors">{p.org}</a>
                     : p.org
                   } · {p.location}
                 </p>
-                {p.description && <p class="font-serif text-sm text-[#5a5550] mt-1.5 max-w-lg leading-relaxed">{p.description}</p>}
+                {p.description && <p class="font-serif text-sm text-[#9FA0C3] mt-1.5 max-w-lg leading-relaxed">{p.description}</p>}
               </div>
-              <span class="font-mono text-[11px] text-[#aaa59f] shrink-0 ml-8">{p.start} – {p.end}</span>
+              <span class="font-mono text-[11px] text-[#9FA0C3] shrink-0 ml-8">{p.start} – {p.end}</span>
             </div>
           ))}
         </div>
       </section>
 
       <section>
-        <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.25em] uppercase block mb-5">Education</span>
-        <div class="border-t border-[#ddd8ce] pt-5 space-y-6">
+        <span class="font-mono text-[10px] text-[#9FA0C3] tracking-[0.25em] uppercase block mb-5">Education</span>
+        <div class="border-t border-[#6D5959] pt-5 space-y-6">
           {education.map(e => (
             <div class="flex justify-between items-start">
               <div>
-                <p class="font-serif font-semibold text-[#0f0e0c]">{e.degree} in {e.field}</p>
-                <p class="font-serif text-sm text-[#7a7570]">{e.institution} · {e.location}</p>
+                <p class="font-serif font-semibold text-[#D2E59E]">{e.degree} in {e.field}</p>
+                <p class="font-serif text-sm text-[#9FA0C3]">{e.institution} · {e.location}</p>
               </div>
-              <span class="font-mono text-[11px] text-[#aaa59f] shrink-0 ml-8">{e.start} – {e.end}</span>
+              <span class="font-mono text-[11px] text-[#9FA0C3] shrink-0 ml-8">{e.start} – {e.end}</span>
             </div>
           ))}
         </div>
@@ -64,14 +64,14 @@ const { positions, education, publications, skills } = entry.data;
       {publications.length > 0 && (
         <section>
           <div class="flex items-center justify-between mb-5">
-            <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.25em] uppercase">
-              Publications <span class="text-[#ddd8ce]">({publications.length})</span>
+            <span class="font-mono text-[10px] text-[#9FA0C3] tracking-[0.25em] uppercase">
+              Publications <span class="text-[#9FA0C3]">({publications.length})</span>
             </span>
             <a
               href="https://orcid.org/0000-0001-6324-8722"
               target="_blank"
               rel="noopener noreferrer"
-              class="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.1em] text-[#a6ce39] hover:text-[#8ab52f] transition-colors"
+              class="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.1em] text-[#D2E59E] hover:text-[#FE9000] transition-colors"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947-.947-.431-.947-.947.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.016-5.325 5.016h-3.919V7.416zm1.444 1.303v7.444h2.297c2.359 0 3.928-1.425 3.928-3.722 0-2.016-1.284-3.722-3.891-3.722h-2.334z"/>
@@ -79,28 +79,28 @@ const { positions, education, publications, skills } = entry.data;
               ORCID ↗
             </a>
           </div>
-          <div class="border-t border-[#ddd8ce] pt-5 space-y-3">
+          <div class="border-t border-[#6D5959] pt-5 space-y-3">
             {publications.map(pub => {
               const isHighImpact = ['Nature Chemistry', 'Nature Catalysis'].includes(pub.journal);
               const badge = {
-                'first':           { cls: 'text-[#2355b0] bg-[#eef2fc] border-[#c5d2f0]', label: 'First author' },
-                'co-first':        { cls: 'text-[#2355b0] bg-[#eef2fc] border-[#c5d2f0]', label: 'Co-first' },
-                'corresponding':   { cls: 'text-[#7a3a00] bg-[#fdf0e0] border-[#f0d0a0]', label: 'Corresponding' },
-                'co-corresponding':{ cls: 'text-[#7a3a00] bg-[#fdf0e0] border-[#f0d0a0]', label: 'Co-corresp.' },
-                'contributing':    { cls: 'text-[#aaa59f] bg-[#eeeae0] border-[#ddd8ce]', label: 'Co-author' },
-              }[pub.role ?? 'contributing'] ?? { cls: 'text-[#aaa59f] bg-[#eeeae0] border-[#ddd8ce]', label: 'Co-author' };
+                'first':           { cls: 'text-[#D2E59E] border-[#6D5959]', label: 'First author' },
+                'co-first':        { cls: 'text-[#D2E59E] border-[#6D5959]', label: 'Co-first' },
+                'corresponding':   { cls: 'text-[#FE9000] border-[#6D5959]', label: 'Corresponding' },
+                'co-corresponding':{ cls: 'text-[#FE9000] border-[#6D5959]', label: 'Co-corresp.' },
+                'contributing':    { cls: 'text-[#9FA0C3] border-[#6D5959]', label: 'Co-author' },
+              }[pub.role ?? 'contributing'] ?? { cls: 'text-[#9FA0C3] border-[#6D5959]', label: 'Co-author' };
               return (
                 <div class="grid gap-3 items-start" style="grid-template-columns: 7rem 1fr;">
                   <span class={`font-mono text-[9px] tracking-[0.06em] uppercase px-1.5 py-0.5 border text-center leading-tight ${badge.cls}`}>
                     {badge.label}
                   </span>
-                  <p class="font-serif text-sm text-[#5a5550] leading-relaxed">
+                  <p class="font-serif text-sm text-[#9FA0C3] leading-relaxed">
                     {pub.authors} &ldquo;{pub.title}.&rdquo;{' '}
-                    <em class={isHighImpact ? 'text-[#0f0e0c] font-semibold not-italic' : ''}>{pub.journal}</em>,{' '}
+                    <em class={isHighImpact ? 'text-[#FE9000] font-semibold not-italic' : ''}>{pub.journal}</em>,{' '}
                     {pub.year}.
                     {pub.doi && (
                       <a href={`https://doi.org/${pub.doi}`} target="_blank" rel="noopener noreferrer"
-                         class="text-[#2355b0] hover:underline ml-1">DOI ↗</a>
+                         class="text-[#FE9000] hover:underline ml-1">DOI ↗</a>
                     )}
                   </p>
                 </div>
@@ -112,10 +112,10 @@ const { positions, education, publications, skills } = entry.data;
 
       {skills.length > 0 && (
         <section>
-          <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.25em] uppercase block mb-5">Skills</span>
-          <div class="border-t border-[#ddd8ce] pt-5 flex flex-wrap gap-2">
+          <span class="font-mono text-[10px] text-[#9FA0C3] tracking-[0.25em] uppercase block mb-5">Skills</span>
+          <div class="border-t border-[#6D5959] pt-5 flex flex-wrap gap-2">
             {skills.map(skill => (
-              <span class="font-mono text-[11px] tracking-[0.05em] bg-[#eeeae0] text-[#5a5550] px-3 py-1.5 border border-[#ddd8ce]">
+              <span class="font-mono text-[11px] tracking-[0.05em] text-[#9FA0C3] px-3 py-1.5 border border-[#6D5959]">
                 {skill}
               </span>
             ))}

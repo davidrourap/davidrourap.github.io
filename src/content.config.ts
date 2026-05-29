@@ -8,6 +8,7 @@ const blog = defineCollection({
     date: z.coerce.date(),
     category: z.enum(['science', 'startup', 'personal']),
     description: z.string(),
+    image: z.string().optional(),
     draft: z.boolean().default(false),
   }),
 });
@@ -32,6 +33,7 @@ const about = defineCollection({
     current_work: z.string(),
     location: z.string().default('Bern, Switzerland'),
     affiliation: z.string().optional(),
+    network_nodes: z.array(z.string()).default([]),
   }),
 });
 

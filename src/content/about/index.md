@@ -14,4 +14,13 @@ current_work: At inseit, we're building an AI-powered platform that predicts and
   by University of Bern, Venture Kick, and BRIDGE.
 location: Munich, Germany
 affiliation: inSEIT AG
+network_nodes:
+  - Biochemist
+  - Biocatalysis
+  - Enzyme Engineering
+  - inseit
+  - Founder
+  - Nature Chemistry
+  - Transaminases
+  - Munich
 ---

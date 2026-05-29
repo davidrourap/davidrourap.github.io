@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProteinHero from '../components/ProteinHero.astro';
+import { getCollection } from 'astro:content';
+
+const [aboutEntry] = await getCollection('about');
+const { background, current_work } = aboutEntry.data;
+
+const [cvEntry] = await getCollection('cv');
+const { publications } = cvEntry.data;
+---
+<BaseLayout title="Research" description="Research — David Roura Padrosa" darkNav={true}>
+
+  <ProteinHero showNav={false} />
+
+  <!-- Chapter opener -->
+  <div class="max-w-5xl mx-auto px-10 md:px-16 pt-20">
+    <div class="flex items-center gap-4 mb-16">
+      <div class="h-px w-8 bg-[#FE9000] flex-shrink-0"></div>
+      <span class="font-mono text-[9px] text-[#9FA0C3] tracking-[0.35em] uppercase">Research focus</span>
+      <div class="flex-1 h-px bg-[#6D5959]"></div>
+      <span class="font-mono text-[9px] text-[#6D5959] tracking-[0.2em] shrink-0">Biochemistry · Biocatalysis</span>
+    </div>
+  </div>
+
+  <!-- Focus section: large pull-quote layout -->
+  <div class="max-w-5xl mx-auto px-10 md:px-16 pb-20">
+    <div class="grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-12 lg:gap-20 items-start">
+      <div class="lg:sticky lg:top-32 pt-1">
+        <h2 class="font-display font-semibold text-[#FE9000] leading-[0.85] tracking-[-0.03em]"
+            style="font-size:clamp(2.8rem,5vw,4.5rem);">
+          Focus
+        </h2>
+      </div>
+      <div class="space-y-6 font-serif leading-relaxed">
+        <p class="text-[#D2E59E] text-xl leading-relaxed">{background}</p>
+        <p class="text-[1.05rem] text-[#9FA0C3]">{current_work}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Publications -->
+  {publications.length > 0 && (
+    <div class="max-w-5xl mx-auto px-10 md:px-16 pb-28">
+
+      <div class="flex items-center gap-4 mb-14">
+        <div class="h-px w-8 bg-[#FE9000] flex-shrink-0"></div>
+        <span class="font-mono text-[9px] text-[#9FA0C3] tracking-[0.35em] uppercase">
+          Publications
+          <span class="text-[#6D5959] ml-1">({publications.length})</span>
+        </span>
+        <div class="flex-1 h-px bg-[#6D5959]"></div>
+        <a
+          href="https://orcid.org/0000-0001-6324-8722"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="font-mono text-[9px] text-[#FE9000] tracking-[0.2em] uppercase hover:underline shrink-0"
+        >
+          ORCID ↗
+        </a>
+      </div>
+
+      <div>
+        {publications.map((pub, i) => {
+          const isHighImpact = ['Nature Chemistry', 'Nature Catalysis'].includes(pub.journal);
+          const badge = {
+            'first':            { cls: 'text-[#D2E59E]', label: 'First author' },
+            'co-first':         { cls: 'text-[#D2E59E]', label: 'Co-first' },
+            'corresponding':    { cls: 'text-[#FE9000]', label: 'Corresponding' },
+            'co-corresponding': { cls: 'text-[#FE9000]', label: 'Co-corresp.' },
+            'contributing':     { cls: 'text-[#9FA0C3]', label: 'Co-author' },
+          }[pub.role ?? 'contributing'] ?? { cls: 'text-[#9FA0C3]', label: 'Co-author' };
+          return (
+            <div class="border-t border-[#6D5959] py-9 grid gap-6 items-start"
+                 style="grid-template-columns: 2rem 5.5rem 1fr;">
+              <span class="font-mono text-[10px] text-[#6D5959] mt-0.5 tabular-nums">
+                {String(publications.length - i).padStart(2, '0')}
+              </span>
+              <div class="flex flex-col gap-1.5 mt-0.5">
+                <span class={`font-mono text-[9px] tracking-[0.06em] uppercase leading-snug ${badge.cls}`}>
+                  {badge.label}
+                </span>
+                <span class="font-mono text-[10px] text-[#6D5959]">{pub.year}</span>
+              </div>
+              <div>
+                <p class="font-display font-semibold text-[#D2E59E] text-[1.1rem] leading-snug mb-2.5">
+                  {pub.title}
+                </p>
+                <p class="font-serif text-sm text-[#9FA0C3] leading-relaxed">
+                  {pub.authors}.{' '}
+                  <em class={isHighImpact ? 'text-[#FE9000] font-semibold not-italic' : ''}>{pub.journal}</em>.
+                  {pub.doi && (
+                    <a href={`https://doi.org/${pub.doi}`} target="_blank" rel="noopener noreferrer"
+                       class="text-[#FE9000] hover:underline ml-2">DOI ↗</a>
+                  )}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+        <div class="border-t border-[#6D5959]"></div>
+      </div>
+    </div>
+  )}
+
+</BaseLayout>

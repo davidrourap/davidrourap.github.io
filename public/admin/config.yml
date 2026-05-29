@@ -20,6 +20,11 @@ collections:
           - { label: Current work, name: current_work, widget: text, hint: "What you're building at inseit." }
           - { label: Location, name: location, widget: string }
           - { label: Affiliation, name: affiliation, widget: string, required: false }
+          - label: Network nodes
+            name: network_nodes
+            widget: list
+            hint: "Labels shown on the homepage particle network when hovered."
+            field: { label: Node label, name: node, widget: string }
       - label: CV
         name: cv
         file: src/content/cv/index.json
@@ -81,6 +86,7 @@ collections:
         widget: select
         options: [science, startup, personal]
       - { label: Description, name: description, widget: string, hint: "Short summary shown in listings." }
+      - { label: Cover image, name: image, widget: image, required: false, hint: "Optional photo shown at the top of the post." }
       - { label: Draft, name: draft, widget: boolean, default: false }
       - { label: Body, name: body, widget: markdown }
 

@@ -6,21 +6,19 @@ const { darkNav = false } = Astro.props;
 const pathname = Astro.url.pathname;
 
 const links = [
-  { href: '/about', label: 'About' },
-  { href: '/blog', label: 'Blog' },
+  { href: '/about',    label: 'About' },
+  { href: '/blog',     label: 'Blog' },
+  { href: '/research', label: 'Research' },
   { href: '/projects', label: 'Projects' },
-  { href: '/cv', label: 'CV' },
+  { href: '/cv',       label: 'CV' },
 ];
 ---
 <header
   id="site-nav"
-  class={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${darkNav ? 'bg-transparent' : 'bg-[#f4efe5]/90 backdrop-blur-sm border-b border-[#ddd8ce]'}`}
+  class={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${darkNav ? 'bg-transparent' : 'bg-[#000500]/95 backdrop-blur-sm border-b border-[#6D5959]'}`}
 >
   <nav class="max-w-6xl mx-auto px-8 h-14 flex items-center justify-between">
-    <a
-      href="/"
-      class={`font-mono text-xs tracking-[0.15em] uppercase transition-colors ${darkNav ? 'text-[#f0ece3] hover:text-white' : 'text-[#0f0e0c] hover:text-[#2355b0]'}`}
-    >
+    <a href="/" class="font-mono text-xs tracking-[0.15em] uppercase text-[#D2E59E] hover:text-[#FE9000] transition-colors">
       DR
     </a>
     <div class="flex items-center gap-7">
@@ -28,41 +26,30 @@ const links = [
         <a
           href={link.href}
           class={`font-mono text-[11px] tracking-[0.15em] uppercase transition-colors
-            ${pathname.startsWith(link.href)
-              ? (darkNav ? 'text-white' : 'text-[#2355b0]')
-              : (darkNav ? 'text-[#8a8d9a] hover:text-[#f0ece3]' : 'text-[#7a7570] hover:text-[#0f0e0c]')
-            }`}
+            ${pathname.startsWith(link.href) ? 'text-[#FE9000]' : 'text-[#9FA0C3] hover:text-[#D2E59E]'}`}
         >
           {link.label}
         </a>
       ))}
-      <span class={`${darkNav ? 'text-[#2a2d3a]' : 'text-[#ddd8ce]'}`}>|</span>
-      <a
-        href="https://github.com/drou0302"
-        target="_blank"
-        rel="noopener noreferrer"
-        class={`font-mono text-[11px] tracking-[0.1em] transition-colors ${darkNav ? 'text-[#556688] hover:text-[#f0ece3]' : 'text-[#aaa59f] hover:text-[#0f0e0c]'}`}
-      >GH</a>
-      <a
-        href="https://www.linkedin.com/in/davidrourap"
-        target="_blank"
-        rel="noopener noreferrer"
-        class={`font-mono text-[11px] tracking-[0.1em] transition-colors ${darkNav ? 'text-[#556688] hover:text-[#f0ece3]' : 'text-[#aaa59f] hover:text-[#0f0e0c]'}`}
-      >LI</a>
+      <span class="text-[#6D5959]">|</span>
+      <a href="https://github.com/drou0302" target="_blank" rel="noopener noreferrer"
+         class="font-mono text-[11px] tracking-[0.1em] text-[#9FA0C3] hover:text-[#FE9000] transition-colors">GH</a>
+      <a href="https://www.linkedin.com/in/davidrourap" target="_blank" rel="noopener noreferrer"
+         class="font-mono text-[11px] tracking-[0.1em] text-[#9FA0C3] hover:text-[#FE9000] transition-colors">LI</a>
     </div>
   </nav>
 </header>
 
 <script>
   const nav = document.getElementById('site-nav');
-  if (nav?.dataset.dark === 'true' || nav?.classList.contains('bg-transparent')) {
+  if (nav?.classList.contains('bg-transparent')) {
     window.addEventListener('scroll', () => {
       if (window.scrollY > 80) {
         nav.classList.remove('bg-transparent');
-        nav.classList.add('bg-[#090a0e]/95', 'backdrop-blur-sm', 'border-b', 'border-[#1e2030]');
+        nav.classList.add('bg-[#000500]/95', 'backdrop-blur-sm', 'border-b', 'border-[#6D5959]');
       } else {
         nav.classList.add('bg-transparent');
-        nav.classList.remove('bg-[#090a0e]/95', 'backdrop-blur-sm', 'border-b', 'border-[#1e2030]');
+        nav.classList.remove('bg-[#000500]/95', 'backdrop-blur-sm', 'border-b', 'border-[#6D5959]');
       }
     }, { passive: true });
   }

@@ -11,36 +11,36 @@ const statusDot: Record<string, string> = {
   paused:    '◐',
 };
 const statusColor: Record<string, string> = {
-  active:    'text-emerald-600',
-  completed: 'text-[#aaa59f]',
-  paused:    'text-amber-500',
+  active:    'text-[#D2E59E]',
+  completed: 'text-[#9FA0C3]',
+  paused:    'text-[#FE9000]',
 };
 ---
-<BaseLayout title="Projects" description="Research and startup projects by David Rourap">
+<BaseLayout title="Projects" description="Research and startup projects by David Roura Padrosa">
   <div class="max-w-4xl mx-auto px-8 pt-28 pb-20">
 
     <div class="flex items-center gap-5 mb-6">
-      <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.25em] uppercase">Work</span>
-      <div class="flex-1 h-px bg-[#ddd8ce]"></div>
+      <span class="font-mono text-[10px] text-[#9FA0C3] tracking-[0.25em] uppercase">Work</span>
+      <div class="flex-1 h-px bg-[#6D5959]"></div>
     </div>
 
-    <h1 class="font-display text-[clamp(3rem,7vw,5rem)] font-semibold leading-[0.9] tracking-[-0.02em] text-[#0f0e0c] mb-4">
+    <h1 class="font-display text-[clamp(3rem,7vw,5rem)] font-semibold leading-[0.9] tracking-[-0.02em] text-[#D2E59E] mb-4">
       Projects
     </h1>
-    <p class="font-serif text-[#7a7570] mb-14">Research, ventures, and side endeavors.</p>
+    <p class="font-serif text-[#9FA0C3] mb-14">Research, ventures, and side endeavors.</p>
 
     {allProjects.length === 0 ? (
-      <p class="font-serif text-[#aaa59f]">Add projects via <a href="/admin" class="text-[#2355b0] hover:underline">/admin</a>.</p>
+      <p class="font-serif text-[#9FA0C3]">Add projects via <a href="/admin" class="text-[#FE9000] hover:underline">/admin</a>.</p>
     ) : (
       <div class="space-y-4">
         {allProjects.map(project => (
-          <article class="group bg-[#faf7f2] border border-[#ddd8ce] hover:bg-white hover:border-[#c0b8ac] transition-all">
+          <article class="group border border-[#6D5959] hover:border-[#FE9000] transition-colors">
             <div class="p-6">
               <div class="flex items-start justify-between gap-6">
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-3 mb-2">
                     <span class={`font-mono text-[10px] tracking-[0.15em] uppercase px-2 py-0.5 border
-                      ${project.data.type === 'startup' ? 'text-blue-700 bg-blue-50 border-blue-200' : 'text-emerald-700 bg-emerald-50 border-emerald-200'}`}>
+                      ${project.data.type === 'startup' ? 'text-[#9FA0C3] border-[#6D5959]' : 'text-[#D2E59E] border-[#6D5959]'}`}>
                       {project.data.type}
                     </span>
                     <span class={`font-mono text-[10px] ${statusColor[project.data.status]}`}>
@@ -48,19 +48,19 @@ const statusColor: Record<string, string> = {
                     </span>
                   </div>
 
-                  <h2 class="font-display text-[1.6rem] font-semibold text-[#0f0e0c] leading-tight mb-2 group-hover:text-[#2355b0] transition-colors">
+                  <h2 class="font-display text-[1.6rem] font-semibold text-[#D2E59E] leading-tight mb-2 group-hover:text-[#FE9000] transition-colors">
                     {project.data.link ? (
                       <a href={project.data.link} target="_blank" rel="noopener noreferrer">
-                        {project.data.title} <span class="text-[#aaa59f] text-lg">↗</span>
+                        {project.data.title} <span class="text-[#9FA0C3] text-lg">↗</span>
                       </a>
                     ) : project.data.title}
                   </h2>
 
-                  <p class="font-serif text-sm text-[#5a5550] leading-relaxed">{project.data.description}</p>
+                  <p class="font-serif text-sm text-[#9FA0C3] leading-relaxed">{project.data.description}</p>
                 </div>
 
                 {project.data.year && (
-                  <span class="font-mono text-[11px] text-[#aaa59f] shrink-0 mt-1">{project.data.year}</span>
+                  <span class="font-mono text-[11px] text-[#9FA0C3] shrink-0 mt-1">{project.data.year}</span>
                 )}
               </div>
             </div>

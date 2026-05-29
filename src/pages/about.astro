@@ -9,50 +9,48 @@ const { intro, background, current_work, location, affiliation } = entry.data;
   <div class="max-w-5xl mx-auto px-8 pt-28 pb-20">
 
     <div class="flex items-center gap-5 mb-16">
-      <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.25em] uppercase">About</span>
-      <div class="flex-1 h-px bg-[#ddd8ce]"></div>
+      <span class="font-mono text-[10px] text-[#9FA0C3] tracking-[0.25em] uppercase">About</span>
+      <div class="flex-1 h-px bg-[#6D5959]"></div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-16 items-start">
 
       <div>
-        <!-- Name -->
-        <h1 class="font-display text-[clamp(2.8rem,6vw,5rem)] font-semibold leading-[0.92] tracking-[-0.02em] text-[#0f0e0c] mb-10">
+        <h1 class="font-display text-[clamp(2.8rem,6vw,5rem)] font-semibold leading-[0.92] tracking-[-0.02em] text-[#D2E59E] mb-10">
           David<br/>Roura Padrosa
         </h1>
 
-        <div class="space-y-6 font-serif text-[1.05rem] text-[#3a3530] leading-relaxed">
-          <p class="text-xl text-[#0f0e0c] leading-snug" set:html={intro.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[#2355b0] hover:underline">$1</a>')} />
+        <div class="space-y-6 font-serif text-[1.05rem] text-[#9FA0C3] leading-relaxed">
+          <p class="text-xl text-[#D2E59E] leading-snug" set:html={intro.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[#FE9000] hover:underline">$1</a>')} />
 
-          <div class="h-px bg-[#ddd8ce] my-8"></div>
+          <div class="h-px bg-[#6D5959] my-8"></div>
 
           <div>
-            <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.2em] uppercase block mb-3">Background</span>
+            <span class="font-mono text-[10px] text-[#9FA0C3] tracking-[0.2em] uppercase block mb-3">Background</span>
             <p>{background}</p>
           </div>
 
           <div>
-            <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.2em] uppercase block mb-3">Current work</span>
+            <span class="font-mono text-[10px] text-[#9FA0C3] tracking-[0.2em] uppercase block mb-3">Current work</span>
             <p>{current_work}</p>
           </div>
         </div>
 
-        <div class="mt-12 pt-8 border-t border-[#ddd8ce] flex flex-wrap gap-6">
+        <div class="mt-12 pt-8 border-t border-[#6D5959] flex flex-wrap gap-6">
           <a href="https://github.com/drou0302" target="_blank" rel="noopener noreferrer"
-             class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#aaa59f] hover:text-[#0f0e0c] transition-colors">GitHub ↗</a>
+             class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#9FA0C3] hover:text-[#FE9000] transition-colors">GitHub ↗</a>
           <a href="https://www.linkedin.com/in/davidrourap" target="_blank" rel="noopener noreferrer"
-             class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#aaa59f] hover:text-[#0f0e0c] transition-colors">LinkedIn ↗</a>
+             class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#9FA0C3] hover:text-[#FE9000] transition-colors">LinkedIn ↗</a>
           <a href="https://orcid.org/0000-0001-6324-8722" target="_blank" rel="noopener noreferrer"
-             class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#aaa59f] hover:text-[#0f0e0c] transition-colors">ORCID ↗</a>
+             class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#9FA0C3] hover:text-[#FE9000] transition-colors">ORCID ↗</a>
           <a href="https://www.inseit.ch" target="_blank" rel="noopener noreferrer"
-             class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#aaa59f] hover:text-[#0f0e0c] transition-colors">inseit.ch ↗</a>
-          <a href="/cv" class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#2355b0] hover:underline">CV →</a>
+             class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#9FA0C3] hover:text-[#FE9000] transition-colors">inseit.ch ↗</a>
+          <a href="/cv" class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#FE9000] hover:underline">CV →</a>
         </div>
       </div>
 
       <!-- Sidebar -->
       <aside class="space-y-0 lg:sticky lg:top-24">
-        <!-- Photo -->
         <div class="mb-8">
           <img
             src="/images/photo.jpg"
@@ -62,23 +60,23 @@ const { intro, background, current_work, location, affiliation } = entry.data;
           />
         </div>
 
-        <div class="space-y-6 border-t border-[#ddd8ce] pt-6">
+        <div class="space-y-6 border-t border-[#6D5959] pt-6">
           <div>
-            <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.2em] uppercase block mb-3">Currently</span>
+            <span class="font-mono text-[10px] text-[#9FA0C3] tracking-[0.2em] uppercase block mb-3">Currently</span>
             <div class="space-y-1.5">
-              <p class="font-serif text-sm text-[#3a3530]">CEO, <a href="https://www.inseit.ch" class="text-[#2355b0] hover:underline">inseit.ch</a></p>
-              {affiliation && <p class="font-serif text-sm text-[#3a3530]">{affiliation}</p>}
+              <p class="font-serif text-sm text-[#D2E59E]">CEO, <a href="https://www.inseit.ch" class="text-[#FE9000] hover:underline">inseit.ch</a></p>
+              {affiliation && <p class="font-serif text-sm text-[#D2E59E]">{affiliation}</p>}
             </div>
           </div>
-          <div class="h-px bg-[#ddd8ce]"></div>
+          <div class="h-px bg-[#6D5959]"></div>
           <div>
-            <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.2em] uppercase block mb-3">Location</span>
-            <p class="font-serif text-sm text-[#3a3530]">{location}</p>
+            <span class="font-mono text-[10px] text-[#9FA0C3] tracking-[0.2em] uppercase block mb-3">Location</span>
+            <p class="font-serif text-sm text-[#D2E59E]">{location}</p>
           </div>
-          <div class="h-px bg-[#ddd8ce]"></div>
+          <div class="h-px bg-[#6D5959]"></div>
           <div>
-            <span class="font-mono text-[10px] text-[#aaa59f] tracking-[0.2em] uppercase block mb-3">Writing</span>
-            <a href="/blog" class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#2355b0] hover:underline">Read the blog →</a>
+            <span class="font-mono text-[10px] text-[#9FA0C3] tracking-[0.2em] uppercase block mb-3">Writing</span>
+            <a href="/blog" class="font-mono text-[11px] tracking-[0.15em] uppercase text-[#FE9000] hover:underline">Read the blog →</a>
           </div>
         </div>
       </aside>
