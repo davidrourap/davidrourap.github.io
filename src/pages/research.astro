@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProteinHero from '../components/ProteinHero.astro';
 import { getCollection } from 'astro:content';
 
 const [aboutEntry] = await getCollection('about');
@@ -8,12 +7,280 @@ const { background, current_work } = aboutEntry.data;
 
 const [cvEntry] = await getCollection('cv');
 const { publications } = cvEntry.data;
+
+// Build pdb_id → publications lookup for the client
+type PubMeta = { title: string; journal: string; year: number; doi?: string };
+const pubByPdb: Record<string, PubMeta[]> = {};
+publications.forEach(pub => {
+  (pub.pdb_ids ?? []).forEach(id => {
+    if (!pubByPdb[id]) pubByPdb[id] = [];
+    pubByPdb[id].push({ title: pub.title, journal: pub.journal, year: pub.year, doi: pub.doi });
+  });
+});
 ---
+
 <BaseLayout title="Research" description="Research — David Roura Padrosa" darkNav={true}>
 
-  <ProteinHero showNav={false} />
+  <!-- ── Split-screen protein hero ──────────────────────────── -->
+  <section id="protein-section" class="relative h-screen bg-[#000500] overflow-hidden">
+    <div class="h-full grid grid-cols-1 lg:grid-cols-[52%_48%]">
 
-  <!-- Chapter opener -->
+      <!-- Left: NGL viewer -->
+      <div class="relative flex flex-col items-center justify-center">
+
+        <div class="absolute top-[4.5rem] left-8 flex items-center gap-3">
+          <div class="h-px w-6 bg-[#6D5959]"></div>
+          <span class="font-mono text-[9px] text-[#9FA0C3] tracking-[0.3em] uppercase">3D Structure</span>
+        </div>
+
+        <div id="ngl-canvas" style="width:360px;height:360px;max-width:85vw;cursor:grab;">
+          <div id="protein-loading" class="w-full h-full flex items-center justify-center">
+            <span class="font-mono text-[10px] text-[#6D5959] tracking-[0.2em] uppercase animate-pulse">Loading…</span>
+          </div>
+        </div>
+
+        <!-- Protein selector -->
+        <div id="pdb-picker" class="relative mt-5" style="opacity:0;">
+          <button
+            id="pdb-trigger"
+            class="flex items-center gap-2 font-mono text-[10px] tracking-[0.18em] uppercase text-[#D2E59E] hover:text-[#FE9000] transition-colors cursor-pointer"
+            aria-haspopup="listbox" aria-expanded="false"
+          >
+            <span id="pdb-trigger-label"></span>
+            <span id="pdb-trigger-arrow" class="text-[#6D5959] text-[8px]">▾</span>
+          </button>
+          <div
+            id="pdb-menu" role="listbox"
+            class="absolute left-1/2 -translate-x-1/2 min-w-[260px] border border-[#6D5959] bg-[#000500] z-10 overflow-y-auto"
+            style="display:none;bottom:calc(100% + 8px);max-height:220px;"
+          ></div>
+        </div>
+
+        <!-- Drag hint -->
+        <div id="drag-hint" class="absolute bottom-8" style="opacity:0;">
+          <span class="font-mono text-[9px] text-[#6D5959] tracking-[0.2em] uppercase">drag · scroll to zoom</span>
+        </div>
+      </div>
+
+      <!-- Right: Info panel -->
+      <div
+        id="info-panel"
+        class="hidden lg:flex flex-col justify-center px-14 pt-24 pb-12 border-l border-[#6D5959]"
+        style="opacity:0;"
+      >
+        <span id="panel-pdb-id" class="font-mono text-[9px] text-[#6D5959] tracking-[0.3em] uppercase mb-5 block"></span>
+
+        <h2 id="panel-title"
+            class="font-display font-semibold text-[#D2E59E] leading-[0.88] tracking-[-0.025em] mb-5"
+            style="font-size:clamp(1.8rem,3vw,2.8rem);"></h2>
+
+        <p id="panel-desc" class="font-serif text-sm text-[#9FA0C3] leading-relaxed mb-8 max-w-xs"></p>
+
+        <!-- Linked publications -->
+        <div id="panel-pub">
+          <div class="h-px bg-[#6D5959] mb-6"></div>
+          <span class="font-mono text-[8px] text-[#6D5959] tracking-[0.3em] uppercase block mb-5">Featured in</span>
+          <div id="panel-pub-entries" class="space-y-5"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="absolute bottom-6 right-8 hidden lg:block">
+      <span class="font-mono text-[9px] text-[#6D5959] tracking-[0.3em] uppercase">Scroll ↓</span>
+    </div>
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 lg:hidden">
+      <span class="font-mono text-[9px] text-[#6D5959] tracking-[0.3em] uppercase">Scroll ↓</span>
+    </div>
+  </section>
+
+  <!-- Pass pub→pdb map to client -->
+  <script id="pub-pdb-data" type="application/json" set:html={JSON.stringify(pubByPdb)}></script>
+
+  <script>
+    interface ProteinEntry { pdb_id: string; title: string; description: string; }
+    interface PubMeta { title: string; journal: string; year: number; doi?: string; }
+
+    function parseMd(fallbackId: string, text: string): ProteinEntry {
+      const match = text.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+      if (!match) return { pdb_id: fallbackId, title: fallbackId, description: text.trim() };
+      const front: Record<string, string> = {};
+      match[1].split('\n').forEach(line => {
+        const i = line.indexOf(':');
+        if (i > 0) front[line.slice(0, i).trim()] = line.slice(i + 1).trim();
+      });
+      return { pdb_id: front.pdb_id ?? fallbackId, title: front.title ?? fallbackId, description: match[2].trim() };
+    }
+
+    async function fetchProteins(): Promise<ProteinEntry[]> {
+      try {
+        const ids: string[] = await fetch('/pdbs/manifest.json').then(r => r.json());
+        return Promise.all(ids.map(async id => {
+          try { return parseMd(id, await fetch(`/pdbs/${id}.md`).then(r => r.text())); }
+          catch { return { pdb_id: id, title: id, description: '' }; }
+        }));
+      } catch {
+        return [{ pdb_id: 'TsRTA', title: 'R-Transaminase', description: '' }];
+      }
+    }
+
+    async function init() {
+      const pubByPdb: Record<string, PubMeta[]> =
+        JSON.parse(document.getElementById('pub-pdb-data')?.textContent || '{}');
+
+      const [NGL, proteins] = await Promise.all([import('ngl') as Promise<any>, fetchProteins()]);
+      document.getElementById('protein-loading')?.remove();
+
+      const stage = new NGL.Stage('ngl-canvas', {
+        backgroundColor: '#000500',
+        ambientColor: 0xffffff, ambientIntensity: 0.7,
+        lightColor: 0xffffff, lightIntensity: 0.9,
+      });
+      window.addEventListener('resize', () => stage.handleResize(), { passive: true });
+
+      const schemeId = NGL.ColormakerRegistry.addScheme(function (this: any) {
+        this.atomColor = (atom: any) => {
+          const ss = atom.sstruc;
+          if (ss === 'h' || ss === 'g' || ss === 'i') return 0xFE9000;
+          if (ss === 'e' || ss === 'b')               return 0x9FA0C3;
+          return 0xD2E59E;
+        };
+      });
+
+      let currentComp: any = null;
+      let activeId = '';
+
+      const panelEl         = document.getElementById('info-panel')!;
+      const panelIdEl       = document.getElementById('panel-pdb-id')!;
+      const panelTitleEl    = document.getElementById('panel-title')!;
+      const panelDescEl     = document.getElementById('panel-desc')!;
+      const panelPubEl      = document.getElementById('panel-pub')!;
+      const panelPubEntries = document.getElementById('panel-pub-entries')!;
+
+      function updatePanel(p: ProteinEntry) {
+        panelIdEl.textContent     = p.pdb_id;
+        panelTitleEl.textContent  = p.title;
+        panelDescEl.textContent   = p.description;
+        panelDescEl.style.display = p.description ? '' : 'none';
+
+        const pubs = pubByPdb[p.pdb_id] ?? [];
+        panelPubEntries.replaceChildren();
+        panelPubEl.style.display = pubs.length ? '' : 'none';
+
+        pubs.forEach(pub => {
+          const wrap = document.createElement('div');
+
+          const titleEl = document.createElement('p');
+          titleEl.style.cssText = 'font-weight:600;color:#D2E59E;font-size:0.9rem;line-height:1.3;margin-bottom:0.3rem;';
+          titleEl.textContent = pub.title;
+
+          const metaEl = document.createElement('p');
+          metaEl.style.cssText = 'font-family:monospace;font-size:9px;letter-spacing:0.1em;color:#9FA0C3;';
+          metaEl.textContent = `${pub.journal} · ${pub.year}`;
+
+          if (pub.doi) {
+            const link = document.createElement('a');
+            link.href = `https://doi.org/${pub.doi}`;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.style.cssText = 'color:#FE9000;margin-left:0.5rem;';
+            link.textContent = 'DOI ↗';
+            metaEl.appendChild(link);
+          }
+
+          wrap.appendChild(titleEl);
+          wrap.appendChild(metaEl);
+          panelPubEntries.appendChild(wrap);
+        });
+      }
+
+      async function loadProtein(pdb_id: string) {
+        stage.setSpin(null as any, 0);
+        if (currentComp) { stage.removeComponent(currentComp); currentComp = null; }
+        currentComp = await stage.loadFile(`/pdbs/${pdb_id}.pdb`);
+        currentComp.addRepresentation('ribbon', { colorScheme: schemeId, smoothSheet: true, subdiv: 12 });
+        currentComp.autoView(0);
+        stage.setSpin([0, 1, 0], 0.006);
+      }
+
+      const trigger      = document.getElementById('pdb-trigger')!;
+      const triggerLabel = document.getElementById('pdb-trigger-label')!;
+      const triggerArrow = document.getElementById('pdb-trigger-arrow')!;
+      const menu         = document.getElementById('pdb-menu')!;
+      const pickerEl     = document.getElementById('pdb-picker')!;
+
+      function setActive(p: ProteinEntry) {
+        activeId = p.pdb_id;
+        triggerLabel.textContent = `${p.pdb_id} · ${p.title}`;
+        menu.querySelectorAll<HTMLElement>('[data-pdb]').forEach(el => {
+          el.style.color = el.dataset.pdb === activeId ? '#D2E59E' : '#9FA0C3';
+        });
+        updatePanel(p);
+      }
+
+      const openMenu  = () => { menu.style.display = 'block'; trigger.setAttribute('aria-expanded', 'true');  triggerArrow.style.transform = 'rotate(180deg)'; };
+      const closeMenu = () => { menu.style.display = 'none';  trigger.setAttribute('aria-expanded', 'false'); triggerArrow.style.transform = ''; };
+
+      proteins.forEach(p => {
+        const item = document.createElement('div');
+        item.dataset.pdb = p.pdb_id;
+        item.role = 'option';
+        item.style.cssText = 'padding:8px 14px;cursor:pointer;font-family:monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.15s;color:#9FA0C3;display:flex;align-items:center;gap:6px;';
+
+        const label = document.createElement('span');
+        label.textContent = `${p.pdb_id} · ${p.title}`;
+        item.appendChild(label);
+
+        if (pubByPdb[p.pdb_id]?.length) {
+          const dot = document.createElement('span');
+          dot.style.cssText = 'width:4px;height:4px;border-radius:50%;background:#FE9000;flex-shrink:0;';
+          item.appendChild(dot);
+        }
+
+        item.addEventListener('mouseover', () => { if (p.pdb_id !== activeId) item.style.color = '#FE9000'; });
+        item.addEventListener('mouseout',  () => { if (p.pdb_id !== activeId) item.style.color = '#9FA0C3'; });
+        item.addEventListener('click', async () => {
+          if (p.pdb_id === activeId) { closeMenu(); return; }
+          closeMenu(); setActive(p); await loadProtein(p.pdb_id);
+        });
+        menu.appendChild(item);
+      });
+
+      trigger.addEventListener('click', e => { e.stopPropagation(); menu.style.display === 'none' ? openMenu() : closeMenu(); });
+      document.addEventListener('click', closeMenu);
+      menu.addEventListener('click', e => e.stopPropagation());
+
+      await loadProtein(proteins[0].pdb_id);
+      setActive(proteins[0]);
+
+      const fadeIn = (el: HTMLElement | null, ms = 0) =>
+        el && setTimeout(() => { el.style.transition = 'opacity 0.6s ease'; el.style.opacity = '1'; }, ms);
+
+      fadeIn(pickerEl, 200);
+      fadeIn(panelEl, 350);
+
+      const hint = document.getElementById('drag-hint') as HTMLElement | null;
+      if (hint) {
+        setTimeout(() => { hint.style.transition = 'opacity 0.5s ease'; hint.style.opacity = '1'; }, 300);
+        setTimeout(() => { hint.style.opacity = '0'; }, 3000);
+      }
+
+      const canvasEl = document.getElementById('ngl-canvas') as HTMLElement;
+      canvasEl.addEventListener('mousedown', () => { stage.setSpin(null as any, 0); canvasEl.style.cursor = 'grabbing'; });
+      canvasEl.addEventListener('mouseup',   () => { stage.setSpin([0, 1, 0], 0.006); canvasEl.style.cursor = 'grab'; });
+
+      document.addEventListener('switch-protein', async (e: Event) => {
+        const targetId = (e as CustomEvent<string>).detail;
+        const target = proteins.find(p => p.pdb_id === targetId);
+        if (!target || targetId === activeId) return;
+        setActive(target);
+        await loadProtein(targetId);
+      });
+    }
+
+    init().catch(console.error);
+  </script>
+
+  <!-- ── Research focus ──────────────────────────────────────── -->
   <div class="max-w-5xl mx-auto px-10 md:px-16 pt-20">
     <div class="flex items-center gap-4 mb-16">
       <div class="h-px w-8 bg-[#FE9000] flex-shrink-0"></div>
@@ -23,14 +290,11 @@ const { publications } = cvEntry.data;
     </div>
   </div>
 
-  <!-- Focus section: large pull-quote layout -->
   <div class="max-w-5xl mx-auto px-10 md:px-16 pb-20">
     <div class="grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-12 lg:gap-20 items-start">
       <div class="lg:sticky lg:top-32 pt-1">
         <h2 class="font-display font-semibold text-[#FE9000] leading-[0.85] tracking-[-0.03em]"
-            style="font-size:clamp(2.8rem,5vw,4.5rem);">
-          Focus
-        </h2>
+            style="font-size:clamp(2.8rem,5vw,4.5rem);">Focus</h2>
       </div>
       <div class="space-y-6 font-serif leading-relaxed">
         <p class="text-[#D2E59E] text-xl leading-relaxed">{background}</p>
@@ -39,25 +303,18 @@ const { publications } = cvEntry.data;
     </div>
   </div>
 
-  <!-- Publications -->
+  <!-- ── Publications ────────────────────────────────────────── -->
   {publications.length > 0 && (
     <div class="max-w-5xl mx-auto px-10 md:px-16 pb-28">
 
       <div class="flex items-center gap-4 mb-14">
         <div class="h-px w-8 bg-[#FE9000] flex-shrink-0"></div>
         <span class="font-mono text-[9px] text-[#9FA0C3] tracking-[0.35em] uppercase">
-          Publications
-          <span class="text-[#6D5959] ml-1">({publications.length})</span>
+          Publications <span class="text-[#6D5959] ml-1">({publications.length})</span>
         </span>
         <div class="flex-1 h-px bg-[#6D5959]"></div>
-        <a
-          href="https://orcid.org/0000-0001-6324-8722"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="font-mono text-[9px] text-[#FE9000] tracking-[0.2em] uppercase hover:underline shrink-0"
-        >
-          ORCID ↗
-        </a>
+        <a href="https://orcid.org/0000-0001-6324-8722" target="_blank" rel="noopener noreferrer"
+           class="font-mono text-[9px] text-[#FE9000] tracking-[0.2em] uppercase hover:underline shrink-0">ORCID ↗</a>
       </div>
 
       <div>
@@ -77,15 +334,11 @@ const { publications } = cvEntry.data;
                 {String(publications.length - i).padStart(2, '0')}
               </span>
               <div class="flex flex-col gap-1.5 mt-0.5">
-                <span class={`font-mono text-[9px] tracking-[0.06em] uppercase leading-snug ${badge.cls}`}>
-                  {badge.label}
-                </span>
+                <span class={`font-mono text-[9px] tracking-[0.06em] uppercase leading-snug ${badge.cls}`}>{badge.label}</span>
                 <span class="font-mono text-[10px] text-[#6D5959]">{pub.year}</span>
               </div>
               <div>
-                <p class="font-display font-semibold text-[#D2E59E] text-[1.1rem] leading-snug mb-2.5">
-                  {pub.title}
-                </p>
+                <p class="font-display font-semibold text-[#D2E59E] text-[1.1rem] leading-snug mb-2.5">{pub.title}</p>
                 <p class="font-serif text-sm text-[#9FA0C3] leading-relaxed mb-3">
                   {pub.authors}.{' '}
                   <em class={isHighImpact ? 'text-[#FE9000] font-semibold not-italic' : ''}>{pub.journal}</em>.
@@ -101,9 +354,7 @@ const { publications } = cvEntry.data;
                       <button
                         data-pdb-switch={id}
                         class="font-mono text-[9px] tracking-[0.12em] uppercase px-2 py-0.5 border border-[#6D5959] text-[#9FA0C3] hover:text-[#FE9000] hover:border-[#FE9000] transition-colors duration-150 cursor-pointer"
-                      >
-                        {id}
-                      </button>
+                      >{id}</button>
                     ))}
                   </div>
                 )}
@@ -116,17 +367,14 @@ const { publications } = cvEntry.data;
     </div>
   )}
 
-
-<script>
-  document.querySelectorAll<HTMLElement>('[data-pdb-switch]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.pdbSwitch!;
-      document.getElementById('protein-section')?.scrollIntoView({ behavior: 'smooth' });
-      setTimeout(() => {
-        document.dispatchEvent(new CustomEvent('switch-protein', { detail: id }));
-      }, 400);
+  <script>
+    document.querySelectorAll<HTMLElement>('[data-pdb-switch]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.pdbSwitch!;
+        document.getElementById('protein-section')?.scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => document.dispatchEvent(new CustomEvent('switch-protein', { detail: id })), 400);
+      });
     });
-  });
-</script>
+  </script>
 
 </BaseLayout>
