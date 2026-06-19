@@ -34,7 +34,7 @@ And hey, some people do notice. And those tend to be the right people. The resea
 
 You cannot find those people without putting the thing out. They cannot find you. The only way the connection happens is through the exposure you were trying to avoid.
 
-## Does it get easier?
+## Did it get easier?
 
 Somewhat. The fear doesn't disappear, but it becomes more familiar, and you get better at recognising it for what it is: just you worrying. A sign that you care about the work, not a sign that the work isn't ready.
 
