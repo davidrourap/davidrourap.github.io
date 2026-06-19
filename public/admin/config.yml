@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: drou0302/drou0302.github.io
+  repo: davidrourap/davidrourap.github.io
   branch: main
   base_url: https://decap-oauth.drou0302.workers.dev
 
