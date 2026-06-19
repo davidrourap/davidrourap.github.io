@@ -17,7 +17,7 @@ const {
   image = '/images/photo.jpg',
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, 'https://drou0302.github.io');
+const canonicalURL = new URL(Astro.url.pathname, 'https://davidrourap.github.io');
 const pageTitle = title === 'David Roura Padrosa' ? title : `${title} — David Roura Padrosa`;
 ---
 <!DOCTYPE html>
@@ -34,11 +34,11 @@ const pageTitle = title === 'David Roura Padrosa' ? title : `${title} — David 
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={new URL(image, 'https://drou0302.github.io')} />
+    <meta property="og:image" content={new URL(image, 'https://davidrourap.github.io')} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL(image, 'https://drou0302.github.io')} />
+    <meta name="twitter:image" content={new URL(image, 'https://davidrourap.github.io')} />
   </head>
   <body class="bg-[#000500] text-[#D2E59E] min-h-screen flex flex-col">
     <Nav darkNav={darkNav} />
