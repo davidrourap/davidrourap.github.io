@@ -37,6 +37,13 @@ const navLinks = [
   ['04', 'Projects', '/projects'],
   ['05', 'CV',       '/cv'],
 ] as const;
+
+const coordinates = [
+  { coords: "41°59'N 2°49'E",   place: 'Girona' },
+  { coords: "52°57'N 1°9'W",    place: 'Nottingham' },
+  { coords: "46°57'N 7°27'E",   place: 'Bern' },
+  { coords: "48°8'N 11°34'E",   place: 'Munich' },
+] as const;
 ---
 
 <style>
@@ -68,9 +75,15 @@ const navLinks = [
       <div class="relative flex flex-col justify-center px-10 md:px-16 lg:px-20 pt-28 pb-12">
 
         <!-- Coordinate annotation -->
-        <div class="fu fu-1 absolute top-[4.5rem] left-10 md:left-16 lg:left-20 flex items-center gap-3">
-          <div class="h-px w-6 bg-[#6D5959]"></div>
-          <span class="font-mono text-[9px] text-[#6D5959] tracking-[0.3em] uppercase">48°8'N 11°34'E — Munich</span>
+        <div class="fu fu-1 absolute top-[4.5rem] left-10 md:left-16 lg:left-20 space-y-1 leading-none">
+          {coordinates.map(({ coords, place }, i) => (
+            <div class="flex items-center gap-3">
+              <div class="h-px w-6 bg-[#6D5959]"></div>
+              <span class={`font-mono text-[9px] tracking-[0.3em] uppercase ${i === coordinates.length - 1 ? 'text-[#9FA0C3]' : 'text-[#6D5959]'}`}>
+                {coords} — {place}
+              </span>
+            </div>
+          ))}
         </div>
 
         <!-- Name -->

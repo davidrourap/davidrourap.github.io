@@ -388,6 +388,57 @@
       "location": "Milan, Italy",
       "year": 2023,
       "type": "invited"
+    },
+    {
+      "title": "Analytica 2026",
+      "venue": "Analytica 2026",
+      "location": "Munich, Germany",
+      "year": 2026,
+      "type": "talk"
+    },
+    {
+      "title": "GBD 2026",
+      "venue": "GBD 2026",
+      "year": 2026,
+      "type": "talk"
+    },
+    {
+      "title": "Pizza & Pitches",
+      "venue": "Pizza & Pitches",
+      "year": 2026,
+      "type": "talk"
+    },
+    {
+      "title": "BiotecSpain 2025",
+      "venue": "BiotecSpain 2025",
+      "year": 2025,
+      "type": "talk"
+    },
+    {
+      "title": "Swiss Biotech Day 2025",
+      "venue": "Swiss Biotech Day",
+      "location": "Basel, Switzerland",
+      "year": 2025,
+      "type": "poster"
+    },
+    {
+      "title": "Start Summit 2025",
+      "venue": "Start Summit",
+      "location": "St. Gallen, Switzerland",
+      "year": 2025,
+      "type": "talk"
+    },
+    {
+      "title": "Nucleate kick-off",
+      "venue": "Nucleate",
+      "year": 2025,
+      "type": "invited"
+    },
+    {
+      "title": "Founders Forum 2024",
+      "venue": "Founders Forum",
+      "year": 2024,
+      "type": "talk"
     }
   ],
   "prizes": [
